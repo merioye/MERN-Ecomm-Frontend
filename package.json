@@ -1,0 +1,42 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emoji-mart/data": "^1.0.6",
+    "@emoji-mart/react": "^1.0.1",
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.8.5",
+    "@reduxjs/toolkit": "^1.8.2",
+    "axios": "^0.27.2",
+    "chart.js": "^3.8.0",
+    "country-state-city": "^3.1.2",
+    "emoji-mart": "^5.2.2",
+    "next": "12.1.6",
+    "nextjs-progressbar": "^0.0.14",
+    "qs": "^6.11.0",
+    "react": "18.2.0",
+    "react-chartjs-2": "^4.3.1",
+    "react-credit-cards": "^0.8.3",
+    "react-dom": "18.2.0",
+    "react-dropzone": "^14.2.2",
+    "react-material-ui-carousel": "^3.4.2",
+    "react-redux": "^8.0.2",
+    "react-slick": "^0.29.0",
+    "react-swipeable-views": "^0.14.0",
+    "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.5.1"
+  },
+  "devDependencies": {
+    "eslint": "8.18.0",
+    "eslint-config-next": "12.1.6"
+  }
+}
