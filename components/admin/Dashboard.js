@@ -1,77 +1,80 @@
-import { useTheme, Box, Typography, Grid } from '@mui/material';
-import DashboardOrderAmount from 'components/admin/DashboardOrderAmount';
-import DashboardOrderStatusCount from 'components/admin/DashboardOrderStatusCount';
-import Charts from 'components/admin/Charts';
-import ProductList from 'components/admin/ProductList';
-import OrderList from 'components/admin/OrderList';
+import { useTheme, Box, Typography, Grid } from "@mui/material";
+import DashboardOrderAmount from "components/admin/DashboardOrderAmount";
+import DashboardOrderStatusCount from "components/admin/DashboardOrderStatusCount";
+import Charts from "components/admin/Charts";
 
-
-
-const Dashboard = ( ) => {
-
+const Dashboard = ({ data }) => {
+    const {
+        todayOrdersAmount,
+        monthOrdersAmount,
+        totalOrdersAmount,
+        totalOrdersCount,
+        pendingOrdersCount,
+        processingOrdersCount,
+        deliveredOrdersCount,
+        sales,
+        topRevenueProducts,
+    } = data;
     const theme = useTheme();
-
 
     return (
         <Box sx={theme.adminTableMainContainer}>
-
-            <Typography variant="h3" sx={theme.adminTableCaption} style={{ marginBottom: '30px' }}>
+            <Typography
+                variant="h3"
+                sx={theme.adminTableCaption}
+                style={{ marginBottom: "30px" }}
+            >
                 Dashboard Overview
             </Typography>
 
             <Grid container spacing={2} mb={4}>
                 <DashboardOrderAmount
-                    bgColor='pink.dark'
+                    bgColor="pink.dark"
                     title="Today's Orders"
-                    amount='$200'
+                    amount={todayOrdersAmount}
                 />
                 <DashboardOrderAmount
-                    bgColor='bg.blue'
+                    bgColor="bg.blue"
                     title="This Month"
-                    amount='$5000'
+                    amount={monthOrdersAmount}
                 />
                 <DashboardOrderAmount
-                    bgColor='#0e9f6e'
+                    bgColor="#0e9f6e"
                     title="Total Orders"
-                    amount='$95000'
+                    amount={totalOrdersAmount}
                 />
             </Grid>
 
             <Grid container spacing={2} mb={4}>
                 <DashboardOrderStatusCount
-                    iconBgColor='#fcd9bd'
-                    iconTextColor='pink.dark'
-                    title='Total Orders'
-                    amount={186}
+                    iconBgColor="#fcd9bd"
+                    iconTextColor="pink.dark"
+                    title="Total Orders"
+                    amount={totalOrdersCount}
                 />
                 <DashboardOrderStatusCount
-                    iconBgColor='#c3ddfd'
-                    iconTextColor='bg.blue'
-                    title='Orders Pending'
-                    amount={38}
+                    iconBgColor="#c3ddfd"
+                    iconTextColor="bg.blue"
+                    title="Orders Pending"
+                    amount={pendingOrdersCount}
                 />
                 <DashboardOrderStatusCount
-                    iconBgColor='bg.silver'
-                    iconTextColor='text.primary'
-                    title='Orders Processing'
-                    amount={65}
+                    iconBgColor="bg.silver"
+                    iconTextColor="text.primary"
+                    title="Orders Processing"
+                    amount={processingOrdersCount}
                 />
                 <DashboardOrderStatusCount
-                    iconBgColor='bg.green'
-                    iconTextColor='#0e9f6e'
-                    title='Orders Delivered'
-                    amount={67}
+                    iconBgColor="bg.green"
+                    iconTextColor="#0e9f6e"
+                    title="Orders Delivered"
+                    amount={deliveredOrdersCount}
                 />
             </Grid>
 
-            <Charts/>
-
-            <ProductList fromDashboard={true} heading='Stock Out Products'/>
-
-            <OrderList fromDashboard={true} heading='Recent Orders'/>
-
+            <Charts sales={sales} topRevenueProducts={topRevenueProducts} />
         </Box>
-    )
-}
+    );
+};
 
 export default Dashboard;

@@ -1,54 +1,89 @@
 html,
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+        Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+    color: inherit;
+    text-decoration: none;
 }
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
+/* style for stripe card input */
+.StripeElement {
+    box-sizing: border-box;
+    width: 100%;
+    height: 40px;
+    padding: 10px 12px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px 0 #e6ebf1;
+    -webkit-transition: box-shadow 150ms ease;
+    transition: box-shadow 150ms ease;
+}
+
+.StripeElement--focus {
+    box-shadow: 0 1px 3px 0 #cfd7df;
+}
+
+.StripeElement--invalid {
+    border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+    background-color: #fefde5 !important;
+}
 
 /* this input box style is for authentication input */
-.inputBox{
-  border: 1px solid #c4c4c4;
-  outline: 'none';
+.inputBox {
+    border: 1px solid #c4c4c4;
+    outline: "none";
 }
-.inputBox::placeholder{
-  color: #c0bfbf;
+.inputBox::placeholder {
+    color: #c0bfbf;
 }
-.inputBox:hover{
-  border: 1px solid #4f4f4f;
+.inputBox:hover {
+    border: 1px solid #4f4f4f;
 }
-.inputBox:focus{
-  border: 2px solid #D23F57;
-  outline: none
-}
-
-
-.inputBox+span{
-  display: none;
-  color: rgb(233, 69, 96);
-  margin: 4px 14px 0px;
-  font-size: 0.75rem;
-  line-height: 1.3;
-  display: none;
-  letter-spacing: 0.05rem;
-}
-.inputBox[focused='true']:invalid +span{
-  display: block;
-}
-.inputBox[focused='true']:invalid{
-  border: 1px solid rgb(233, 69, 96);
-  color: rgb(233, 69, 96);
+.inputBox:focus {
+    border: 2px solid #d23f57;
+    outline: none;
 }
 
+.inputBox + span {
+    display: none;
+    color: rgb(233, 69, 96);
+    margin: 4px 14px 0px;
+    font-size: 0.75rem;
+    line-height: 1.3;
+    display: none;
+    letter-spacing: 0.05rem;
+}
+.inputBox[focused="true"]:invalid + span {
+    display: block;
+}
+.inputBox[focused="true"]:invalid {
+    border: 1px solid rgb(233, 69, 96);
+    color: rgb(233, 69, 96);
+}
 
+/* scroll bars */
+::-webkit-scrollbar {
+    width: 9px;
+}
 
+::-webkit-scrollbar-track {
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(199, 199, 199);
+    border-radius: 5px;
+}

@@ -1,26 +1,31 @@
 import { showErrorAlert } from "redux/alertSlice";
 import { updateCart } from "redux/cartSlice";
 
-
-const handleAddToCart = (type, product, count, setCount, dispatch)=>{
-
-    if(type==='inc'){
-       
-        if(product.stock===0){
-            dispatch(showErrorAlert('Product is out of stock at the moment'));
+const handleAddToCart = (
+    type,
+    product,
+    count,
+    setCount,
+    dispatch,
+    setIsBtnDisabled
+) => {
+    if (type === "inc") {
+        if (product.stock === 0) {
+            dispatch(showErrorAlert("Product is out of stock at the moment"));
             return;
         }
-        if(product.stock<=count){
-            dispatch(showErrorAlert(`Only ${product.stock} quantity available`));
+        if (product.stock <= count) {
+            dispatch(
+                showErrorAlert(`Only ${product.stock} quantity available`)
+            );
             return;
         }
-
-        dispatch(updateCart(count, setCount, product, 'inc'));
-        
+        setIsBtnDisabled(true);
+        dispatch(updateCart(count, setCount, product, "inc", setIsBtnDisabled));
+    } else if (type === "dec") {
+        setIsBtnDisabled(true);
+        dispatch(updateCart(count, setCount, product, "dec", setIsBtnDisabled));
     }
-    else if(type==='dec'){
-        dispatch(updateCart(count, setCount, product, 'dec'));
-    }
-}
+};
 
-export default handleAddToCart; 
+export default handleAddToCart;
