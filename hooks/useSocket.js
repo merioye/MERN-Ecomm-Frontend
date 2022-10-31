@@ -9,10 +9,16 @@ import {
     showSuccessAlert,
 } from "redux/alertSlice";
 import { addNewOrder, updateCustomerOrder } from "redux/orderSlice";
+import {
+    updateConversation,
+    updateChatLastMessageReadBy,
+    addNewMessage,
+} from "redux/chatSlice";
 
 export const useSocket = () => {
     const { socket } = useSelector((state) => state.socket);
     const { user } = useSelector((state) => state.auth);
+    const { selectedChat, chatsMessages } = useSelector((state) => state.chat);
     const dispatch = useDispatch();
 
     // initializing socket and registering events on it
@@ -68,6 +74,21 @@ export const useSocket = () => {
             }
             dispatch(updateCustomerOrder(updatedOrder));
         });
+
+        socketInstance.on(
+            "newMessage",
+            ({ newMessage, updatedConversation, senderName }) => {
+                dispatch(showInfoAlert(`${senderName} just messaged you`));
+                dispatch(updateConversation({ updatedConversation }));
+                dispatch(updateChatLastMessageReadBy(updatedConversation._id));
+                dispatch(
+                    addNewMessage({
+                        chatId: updatedConversation._id,
+                        message: newMessage,
+                    })
+                );
+            }
+        );
 
         dispatch(setSocket(socketInstance));
     }, [user]);

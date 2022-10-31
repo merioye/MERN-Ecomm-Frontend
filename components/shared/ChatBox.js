@@ -2,7 +2,15 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useSelector, useDispatch } from "react-redux";
-import { toggleChatBoxVisibility } from "redux/productSlice";
+import {
+    toggleChatBoxVisibility,
+    setSelectedChat,
+    fetchAllConversations,
+    fetchChatMessages,
+    sendMsg,
+    updateChatLastMessageReadBy,
+} from "redux/chatSlice";
+
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import {
@@ -16,7 +24,10 @@ import {
     InputBase,
     Skeleton,
     Grid,
+    CircularProgress,
 } from "@mui/material";
+import ErrorIcon from "@mui/icons-material/Error";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
@@ -76,6 +87,8 @@ const style = {
         height: "45px",
         width: "45px",
         marginRight: "20px",
+        borderRadius: "50%",
+        overflow: "hidden",
     },
     conversationOverviewMessageAuthorName: {
         fontSize: "16px",
@@ -95,6 +108,7 @@ const style = {
         overflow: "hidden",
         whiteSpace: "nowrap",
         textOverflow: "ellipsis",
+        textAlign: "left",
     },
     arrowIcon: {
         position: "absolute",
@@ -165,78 +179,84 @@ const style = {
         color: "text.primary",
         backgroundColor: "bg.silver",
     },
+    messageStatusIcon: {
+        position: "absolute",
+        bottom: "7px",
+        right: "5px",
+    },
 };
-
-const messagesList = [
-    {
-        author: "me",
-        isEmojiOnly: false,
-        text: "Hello how are you?",
-    },
-    {
-        author: "me",
-        isEmojiOnly: false,
-        text: "What are you doing these days?",
-    },
-    {
-        author: "me",
-        isEmojiOnly: true,
-        text: "😃",
-    },
-    {
-        author: "other",
-        isEmojiOnly: false,
-        text: "Fine",
-    },
-    {
-        author: "other",
-        isEmojiOnly: true,
-        text: "😍",
-    },
-    {
-        author: "other",
-        isEmojiOnly: true,
-        text: "💝",
-    },
-    {
-        author: "other",
-        isEmojiOnly: false,
-        text: "What about you?, Ap sunao kese ho aj kal kya chal rha ha. Ghar sab thek ha?",
-    },
-];
-const Message = ({ message }) => {
+const Message = ({ message, myId }) => {
     return (
         <Box
             sx={{
+                position: "relative",
                 display: "flex",
                 justifyContent:
-                    message.author === "me" ? "flex-end" : "flex-start",
+                    message.senderId === myId ? "flex-end" : "flex-start",
             }}
         >
             <Typography
                 variant="body1"
                 sx={
-                    message.isEmojiOnly
+                    message.isOnlyEmoji
                         ? style.onlyEmojiMessage
-                        : message.author === "me"
+                        : message.senderId === myId
                         ? { ...style.message, ...style.myMessage }
                         : { ...style.message, ...style.otherMessage }
                 }
+                style={{ whiteSpace: "pre-line" }}
             >
                 {message.text}
             </Typography>
+            {message.status && (
+                <Box
+                    sx={style.messageStatusIcon}
+                    style={message.isOnlyEmoji ? { bottom: "-2px" } : null}
+                >
+                    {message.status === "loading" && (
+                        <CircularProgress
+                            size={13}
+                            sx={{ color: "bg.steal" }}
+                        />
+                    )}
+                    {message.status === "error" && (
+                        <ErrorIcon
+                            sx={{
+                                color: "pink.dark",
+                                fontSize: "16px",
+                                backgroundColor: "white",
+                                borderRadius: "50%",
+                            }}
+                        />
+                    )}
+                    {message.status === "success" && (
+                        <CheckCircleIcon
+                            sx={{
+                                color: "text.green",
+                                fontSize: "16px",
+                                backgroundColor: "white",
+                                borderRadius: "50%",
+                            }}
+                        />
+                    )}
+                </Box>
+            )}
         </Box>
     );
 };
 const ChatBox = ({ fromAdmin }) => {
-    const { showChatBox } = useSelector((state) => state.product);
-    const [isConversationsFetched, setIsConversationsFetched] = useState(false);
-    const [isMessagesFetched, setIsMessagesFetched] = useState(false);
-    const [selectedChatId, setSelectedChatId] = useState(null);
+    const {
+        showChatBox,
+        conversations: { isConversationsFetched, conversationsList },
+        chatsMessages,
+        selectedChat,
+    } = useSelector((state) => state.chat);
+    const { user } = useSelector((state) => state.auth);
+    const { onlineUsers } = useSelector((state) => state.socket);
+    const [selectedChatUser, setSelectedChatUser] = useState(null);
     const [showMessages, setShowMessages] = useState(false);
     const [typedMessage, setTypedMessage] = useState("");
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    const [user, setUser] = useState("user"); // temporary state, it will be fetch from redux store
     const messageInputRef = useRef(null);
     const messagesEndRef = useRef(null);
     const dispatch = useDispatch();
@@ -245,53 +265,64 @@ const ChatBox = ({ fromAdmin }) => {
 
     useEffect(() => {
         if (user) {
-            // here write code to fetch all conversations(chats)
-            setTimeout(() => {
-                // written just to demo the skeleton ui
-                setIsConversationsFetched(true);
-            }, 1000);
+            dispatch(fetchAllConversations());
         }
-    }, []);
+    }, [user]);
 
     useEffect(() => {
         if (showMessages) {
-            // here write code to fetch all messages of selected chat
-            setTimeout(() => {
-                // written just to demo the skeleton ui
-                setIsMessagesFetched(true);
-            }, 3000);
+            dispatch(fetchChatMessages());
         }
     }, [showMessages]);
 
     useEffect(() => {
-        if (isMessagesFetched) {
+        if (user && chatsMessages.hasOwnProperty(selectedChat?._id)) {
             messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
         }
-    }, [isMessagesFetched]);
+    }, [JSON.stringify(chatsMessages), showMessages]);
 
     const sendMessage = (emoji) => {
-        // if there is emoji present means user just want to send emoji only to user
-        // then directly send that emoji to user
-        // messageSchema = {
-        //     message: emoji,
-        //     isOnlyEmoji: true
-        //     ...otherfields
-        // }
-        // I'm doing this only to show only emoji message in different style than text or
-        // text + emoji message to user(e.g onlyEmoji message will have large text font size
-        // and no background color when displayed just like mongodb atlas message style
-        // of which screenshoot I have saved in my phone as favorite)
+        const message = {
+            text: typedMessage,
+        };
         if (emoji) {
+            message.text = emoji;
+            message.isOnlyEmoji = true;
         }
-        // else user want to send only text or text+emoji
-        // emojiSchema = {
-        //     message: typedMessage,
-        //     isOnlyEmoji: false
-        //     ...otherfields
-        // }
-        else {
+
+        dispatch(
+            sendMsg(
+                selectedChat._id,
+                user.role === "user" ? "admin" : selectedChatUser._id,
+                message
+            )
+        );
+        setTypedMessage("");
+    };
+
+    const handleEmojiClick = (emojiData) => {
+        setShowEmojiPicker(false);
+        if (typedMessage.trim().length) {
+            setTypedMessage(typedMessage + emojiData.native);
+        } else {
+            sendMessage(emojiData.native);
+        }
+        messageInputRef.current.focus();
+    };
+
+    const handleConversationClick = (conversation) => {
+        dispatch(setSelectedChat(conversation));
+        setSelectedChatUser(
+            conversation.participants[0]._id === user._id
+                ? conversation.participants[1]
+                : conversation.participants[0]
+        );
+        setShowMessages(true);
+        if (!conversation.lastMessageReadBy.includes(user._id)) {
+            dispatch(updateChatLastMessageReadBy(conversation._id));
         }
     };
+
     return (
         <Grow in={showChatBox}>
             <Box
@@ -320,11 +351,19 @@ const ChatBox = ({ fromAdmin }) => {
                             <Box sx={style.userInfoContainer}>
                                 <Box sx={style.avatarContainer}>
                                     <Image
-                                        src="/images/man.svg"
+                                        src={
+                                            selectedChatUser.avatar
+                                                ? selectedChatUser.avatar
+                                                : "/images/man.svg"
+                                        }
                                         alt="profileImage"
                                         layout="fill"
                                         placeholder="blur"
-                                        blurDataURL="/images/man.svg"
+                                        blurDataURL={
+                                            selectedChatUser.avatar
+                                                ? selectedChatUser.avatar
+                                                : "/images/man.svg"
+                                        }
                                     />
                                 </Box>
                                 <Box>
@@ -333,7 +372,7 @@ const ChatBox = ({ fromAdmin }) => {
                                         sx={style.heading}
                                         style={{ fontSize: "15px" }}
                                     >
-                                        Faheem Hassan
+                                        {selectedChatUser.name}
                                     </Typography>
                                     <Typography
                                         variant="body1"
@@ -342,7 +381,19 @@ const ChatBox = ({ fromAdmin }) => {
                                         }
                                         style={{ fontSize: "13px" }}
                                     >
-                                        Online
+                                        {user
+                                            ? user.role === "user"
+                                                ? onlineUsers.hasOwnProperty(
+                                                      "admin"
+                                                  )
+                                                    ? "Online"
+                                                    : "Offline"
+                                                : onlineUsers.hasOwnProperty(
+                                                      selectedChatUser._id
+                                                  )
+                                                ? "Online"
+                                                : "Offline"
+                                            : ""}
                                     </Typography>
                                 </Box>
                             </Box>
@@ -350,8 +401,8 @@ const ChatBox = ({ fromAdmin }) => {
                                 sx={style.backToConversationsBtn}
                                 onClick={() => {
                                     setShowMessages(false);
-                                    setSelectedChatId(null);
-                                    setIsMessagesFetched(false);
+                                    setSelectedChatUser(null);
+                                    dispatch(setSelectedChat(null));
                                 }}
                             >
                                 <KeyboardArrowLeftIcon
@@ -364,15 +415,18 @@ const ChatBox = ({ fromAdmin }) => {
                         </Box>
 
                         <Box sx={style.messagesList}>
-                            {isMessagesFetched
-                                ? messagesList.map((message, index) => {
-                                      return (
-                                          <Message
-                                              key={index}
-                                              message={message}
-                                          />
-                                      );
-                                  })
+                            {chatsMessages.hasOwnProperty(selectedChat?._id)
+                                ? chatsMessages[selectedChat._id].map(
+                                      (message) => {
+                                          return (
+                                              <Message
+                                                  key={message._id}
+                                                  message={message}
+                                                  myId={user._id}
+                                              />
+                                          );
+                                      }
+                                  )
                                 : [1, 2, 3, 4, 5].map((item) => {
                                       return (
                                           <Box
@@ -464,6 +518,7 @@ const ChatBox = ({ fromAdmin }) => {
                                             ? "69px"
                                             : "29px",
                                     }}
+                                    onClick={() => setShowEmojiPicker(false)}
                                 />
                             ) : (
                                 <SentimentSatisfiedAltIcon
@@ -480,7 +535,7 @@ const ChatBox = ({ fromAdmin }) => {
                             {typedMessage.trim().length ? (
                                 <SendIcon
                                     sx={{ ...style.iconBtn }}
-                                    onClick={sendMessage}
+                                    onClick={() => sendMessage()}
                                 />
                             ) : null}
                             {showEmojiPicker ? (
@@ -493,20 +548,8 @@ const ChatBox = ({ fromAdmin }) => {
                                     <Picker
                                         data={data}
                                         onEmojiSelect={(emojiData) => {
-                                            setShowEmojiPicker(false);
-                                            if (typedMessage.trim().length) {
-                                                setTypedMessage(
-                                                    typedMessage +
-                                                        emojiData.native
-                                                );
-                                            } else {
-                                                sendMessage(emojiData.native);
-                                            }
-                                            messageInputRef.current.focus();
+                                            handleEmojiClick(emojiData);
                                         }}
-                                        onClickOutside={() =>
-                                            setShowEmojiPicker(false)
-                                        }
                                     />
                                 </Box>
                             ) : null}
@@ -518,133 +561,217 @@ const ChatBox = ({ fromAdmin }) => {
                             <Typography variant="h2" sx={style.heading}>
                                 Your conversations
                             </Typography>
-                            <IconButton
-                                sx={style.chatBoxCloseBtn}
-                                onClick={() =>
-                                    dispatch(toggleChatBoxVisibility(false))
-                                }
-                            >
+                            <IconButton sx={style.chatBoxCloseBtn}>
                                 <CloseIcon sx={{ color: "text.white" }} />
                             </IconButton>
                         </Box>
                         {user ? (
                             <Box sx={style.allConversations}>
-                                {isConversationsFetched
-                                    ? [1, 2, 3, 4, 5, 6].map((conversation) => {
-                                          return (
-                                              <Box key={conversation}>
-                                                  <Button
-                                                      sx={
-                                                          style.conversationItem
-                                                      }
-                                                      onClick={() => {
-                                                          setSelectedChatId(
-                                                              conversation
-                                                          );
-                                                          setShowMessages(true);
-                                                      }}
-                                                  >
-                                                      <Box
-                                                          sx={
-                                                              style.conversationOverview
-                                                          }
-                                                      >
-                                                          <Box
-                                                              sx={
-                                                                  style.avatarContainer
-                                                              }
-                                                          >
-                                                              <Image
-                                                                  src="/images/man.svg"
-                                                                  alt="profileImage"
-                                                                  layout="fill"
-                                                                  placeholder="blur"
-                                                                  blurDataURL="/images/man.svg"
-                                                              />
-                                                          </Box>
-                                                          <Box
-                                                              sx={{
-                                                                  width: "calc(100% - 90px)",
-                                                              }}
-                                                          >
-                                                              <Typography
-                                                                  variant="h6"
-                                                                  sx={
-                                                                      style.conversationOverviewMessageAuthorName
-                                                                  }
-                                                              >
-                                                                  Faheem Hassan
-                                                              </Typography>
-                                                              <Typography
-                                                                  variant="body1"
-                                                                  sx={
-                                                                      style.conversationOverviewMessageText
-                                                                  }
-                                                              >
-                                                                  Hello how are
-                                                                  you I think
-                                                                  you will be
-                                                                  fine, I want
-                                                                  to meet you
-                                                                  please, I am a
-                                                                  your big fan
-                                                              </Typography>
-                                                          </Box>
-                                                      </Box>
-                                                      <KeyboardArrowRightIcon
-                                                          sx={style.arrowIcon}
-                                                      />
-                                                  </Button>
-                                                  <Divider light={true} />
-                                              </Box>
-                                          );
-                                      })
-                                    : [1, 2, 3, 4, 5].map((item) => {
-                                          return (
-                                              <Box
-                                                  key={item}
-                                                  sx={{
-                                                      ...style.conversationItem,
-                                                      ...style.conversationOverview,
-                                                  }}
-                                              >
-                                                  <Skeleton
-                                                      sx={{
-                                                          bgcolor: "bg.silver",
-                                                      }}
-                                                      variant="circular"
-                                                      height={45}
-                                                      width={45}
-                                                      animation="wave"
-                                                  />
-                                                  <Box
-                                                      ml="20px"
-                                                      style={{
-                                                          width: "calc(100% - 55px)",
-                                                      }}
-                                                  >
-                                                      <Skeleton
-                                                          sx={{
-                                                              bgcolor:
-                                                                  "bg.silver",
-                                                          }}
-                                                          height={20}
-                                                          width="40%"
-                                                          animation="wave"
-                                                      />
-                                                      <Skeleton
-                                                          sx={{
-                                                              bgcolor:
-                                                                  "bg.silver",
-                                                          }}
-                                                          height={20}
-                                                          width="80%"
-                                                          animation="wave"
-                                                      />
-                                                  </Box>
-                                              </Box>
-                                          );
-                                      })}
+                                {isConversationsFetched ? (
+                                    conversationsList.length ? (
+                                        conversationsList.map(
+                                            (conversation) => {
+                                                return (
+                                                    <Box key={conversation._id}>
+                                                        <Button
+                                                            sx={
+                                                                style.conversationItem
+                                                            }
+                                                            onClick={() => {
+                                                                handleConversationClick(
+                                                                    conversation
+                                                                );
+                                                            }}
+                                                        >
+                                                            <Box
+                                                                sx={
+                                                                    style.conversationOverview
+                                                                }
+                                                            >
+                                                                <Box
+                                                                    sx={
+                                                                        style.avatarContainer
+                                                                    }
+                                                                >
+                                                                    <Image
+                                                                        src={
+                                                                            conversation
+                                                                                .participants[0]
+                                                                                ._id ===
+                                                                            user._id
+                                                                                ? conversation
+                                                                                      .participants[1]
+                                                                                      .avatar
+                                                                                    ? conversation
+                                                                                          .participants[1]
+                                                                                          .avatar
+                                                                                    : "/images/man.svg"
+                                                                                : conversation
+                                                                                      .participants[0]
+                                                                                      .avatar
+                                                                                ? conversation
+                                                                                      .participants[0]
+                                                                                      .avatar
+                                                                                : "/images/man.svg"
+                                                                        }
+                                                                        alt="profileImage"
+                                                                        layout="fill"
+                                                                        placeholder="blur"
+                                                                        blurDataURL={
+                                                                            conversation
+                                                                                .participants[0]
+                                                                                ._id ===
+                                                                            user._id
+                                                                                ? conversation
+                                                                                      .participants[1]
+                                                                                      .avatar
+                                                                                    ? conversation
+                                                                                          .participants[1]
+                                                                                          .avatar
+                                                                                    : "/images/man.svg"
+                                                                                : conversation
+                                                                                      .participants[0]
+                                                                                      .avatar
+                                                                                ? conversation
+                                                                                      .participants[0]
+                                                                                      .avatar
+                                                                                : "/images/man.svg"
+                                                                        }
+                                                                    />
+                                                                </Box>
+                                                                <Box
+                                                                    sx={{
+                                                                        width: "calc(100% - 90px)",
+                                                                    }}
+                                                                >
+                                                                    <Typography
+                                                                        variant="h6"
+                                                                        sx={
+                                                                            style.conversationOverviewMessageAuthorName
+                                                                        }
+                                                                    >
+                                                                        {conversation
+                                                                            .participants[0]
+                                                                            ._id ===
+                                                                        user._id
+                                                                            ? conversation
+                                                                                  .participants[1]
+                                                                                  .name
+                                                                            : conversation
+                                                                                  .participants[0]
+                                                                                  .name}
+                                                                    </Typography>
+                                                                    <Typography
+                                                                        variant="body1"
+                                                                        sx={
+                                                                            conversation.lastMessageReadBy.includes(
+                                                                                user._id
+                                                                            )
+                                                                                ? {
+                                                                                      ...style.conversationOverviewMessageText,
+                                                                                  }
+                                                                                : {
+                                                                                      ...style.conversationOverviewMessageText,
+                                                                                      color: "bg.azureBlue",
+                                                                                      fontWeight: 600,
+                                                                                  }
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            conversation.lastMessage
+                                                                        }
+                                                                    </Typography>
+                                                                </Box>
+                                                            </Box>
+                                                            <KeyboardArrowRightIcon
+                                                                sx={
+                                                                    style.arrowIcon
+                                                                }
+                                                            />
+                                                        </Button>
+                                                        <Divider light={true} />
+                                                    </Box>
+                                                );
+                                            }
+                                        )
+                                    ) : (
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                height: "100%",
+                                                flexDirection: "column",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <Typography
+                                                variant="h6"
+                                                sx={{
+                                                    fontSize: "18px",
+                                                    color: "text.light",
+                                                }}
+                                            >
+                                                Your Conversations List is empty
+                                                😷
+                                            </Typography>
+                                            <Image
+                                                src="/images/empty-box.jpg"
+                                                alt="emptyBoxImage"
+                                                height="40px"
+                                                width="50px"
+                                                placeholder="blur"
+                                                blurDataURL="/images/empty-box.jpg"
+                                            />
+                                        </Box>
+                                    )
+                                ) : (
+                                    [1, 2, 3, 4, 5].map((item) => {
+                                        return (
+                                            <Box
+                                                key={item}
+                                                sx={{
+                                                    ...style.conversationItem,
+                                                    ...style.conversationOverview,
+                                                }}
+                                            >
+                                                <Skeleton
+                                                    sx={{
+                                                        bgcolor: "bg.silver",
+                                                    }}
+                                                    variant="circular"
+                                                    height={45}
+                                                    width={45}
+                                                    animation="wave"
+                                                />
+                                                <Box
+                                                    ml="20px"
+                                                    style={{
+                                                        width: "calc(100% - 55px)",
+                                                    }}
+                                                >
+                                                    <Skeleton
+                                                        sx={{
+                                                            bgcolor:
+                                                                "bg.silver",
+                                                        }}
+                                                        height={20}
+                                                        width="40%"
+                                                        animation="wave"
+                                                    />
+                                                    <Skeleton
+                                                        sx={{
+                                                            bgcolor:
+                                                                "bg.silver",
+                                                        }}
+                                                        height={20}
+                                                        width="80%"
+                                                        animation="wave"
+                                                    />
+                                                </Box>
+                                            </Box>
+                                        );
+                                    })
+                                )}
                             </Box>
                         ) : (
                             <Grid

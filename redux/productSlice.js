@@ -2,95 +2,102 @@ import { createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "config/axios";
 import { showErrorAlert } from "redux/alertSlice";
 
-
 const productSlice = createSlice({
-    name: 'product',
+    name: "product",
     initialState: {
         showFiltersSidebar: false,
         showUserDashboardSidebar: false,
         showSidebarOnMobile: false,
-        showChatBox: false,
-        brands: {             // It contains paginated brands 
-            status: false,    // status represents whether data is fetched from api or not
-            brandsList: []
+        brands: {
+            // It contains paginated brands
+            status: false, // status represents whether data is fetched from api or not
+            brandsList: [],
         },
-        allBrands: [],        // It contains all the the brands available in db
+        allBrands: [], // It contains all the the brands available in db
         categories: {
             status: false,
-            categoriesList: []
+            categoriesList: [],
         },
         allCategories: [],
         users: {
             status: false,
-            usersList: []
+            usersList: [],
         },
-        products: { 
+        products: {
             status: false,
-            all: []
+            all: [],
         },
         coupons: {
             status: false,
-            couponsList: []
-        }
+            couponsList: [],
+        },
     },
     reducers: {
-        toggleFiltersVisibility(state, action){
+        toggleFiltersVisibility(state, action) {
             state.showFiltersSidebar = action.payload;
         },
-        toggleUserDashboardVisibility(state, action){
+        toggleUserDashboardVisibility(state, action) {
             state.showUserDashboardSidebar = action.payload;
         },
-        toggleMobileSidebar(state, action){
+        toggleMobileSidebar(state, action) {
             state.showSidebarOnMobile = action.payload;
         },
-        toggleChatBoxVisibility(state, action){
-            state.showChatBox = action.payload;
-        },
-        setBrands(state, action){
+        setBrands(state, action) {
             state.brands = { status: true, brandsList: action.payload };
         },
-        resetBrandsStatus(state, action){
-            state.brands = { status: false, brandsList: state.brands.brandsList };
+        resetBrandsStatus(state, action) {
+            state.brands = {
+                status: false,
+                brandsList: state.brands.brandsList,
+            };
         },
-        setAllBrands(state, action){
+        setAllBrands(state, action) {
             state.allBrands = action.payload;
         },
-        setCategories(state, action){
+        setCategories(state, action) {
             state.categories = { status: true, categoriesList: action.payload };
         },
-        resetCategoriesStatus(state, action){
-            state.categories = { status: false, categoriesList: state.categories.categoriesList };
+        resetCategoriesStatus(state, action) {
+            state.categories = {
+                status: false,
+                categoriesList: state.categories.categoriesList,
+            };
         },
-        setAllCategories(state, action){
+        setAllCategories(state, action) {
             state.allCategories = action.payload;
         },
-        setUsers(state, action){
+        setUsers(state, action) {
             state.users = { status: true, usersList: action.payload };
         },
-        resetUsersStatus(state, action){
+        resetUsersStatus(state, action) {
             state.users = { status: false, usersList: state.users.usersList };
         },
-        setProducts(state, action){
-            state.products = { ...state.products, status: true, [action.payload.productType]: action.payload.products };
+        setProducts(state, action) {
+            state.products = {
+                ...state.products,
+                status: true,
+                [action.payload.productType]: action.payload.products,
+            };
         },
-        resetProductsStatus(state, action){
+        resetProductsStatus(state, action) {
             state.products = { ...state.products, status: false };
         },
-        setCoupons(state, action){
+        setCoupons(state, action) {
             state.coupons = { status: true, couponsList: action.payload };
         },
-        resetCouponsStatus(state, action){
-            state.coupons = { status: false, couponsList: state.coupons.couponsList };
-        }
-    }
+        resetCouponsStatus(state, action) {
+            state.coupons = {
+                status: false,
+                couponsList: state.coupons.couponsList,
+            };
+        },
+    },
 });
-
 
 export const {
     toggleFiltersVisibility,
     toggleUserDashboardVisibility,
     toggleMobileSidebar,
-    toggleChatBoxVisibility,
     setBrands,
     resetBrandsStatus,
     setAllBrands,
@@ -102,410 +109,402 @@ export const {
     setProducts,
     resetProductsStatus,
     setCoupons,
-    resetCouponsStatus
+    resetCouponsStatus,
 } = productSlice.actions;
 
 export default productSlice.reducer;
 
-
-
-
-
-
 // Thunks
-export function getAllBrands(){   
-    return async function getAllBrandsThunk(dispatch){
-        try{
-            const res = await axiosInstance.get('/api/brands');
+export function getAllBrands() {
+    return async function getAllBrandsThunk(dispatch) {
+        try {
+            const res = await axiosInstance.get("/api/brands");
             dispatch(setAllBrands(res.data.result));
-        }catch(e){
+        } catch (e) {
             console.log(e);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
 
-
-export function createBrand(values, setShowLoader, router){
-    return async function createBrandThunk(dispatch){
-        try{
-            await axiosInstance.post('/api/admin/brands', values);
-            router.push('/admin/brands');
-        }catch(e){
+export function createBrand(values, setShowLoader, router) {
+    return async function createBrandThunk(dispatch) {
+        try {
+            await axiosInstance.post("/api/admin/brands", values);
+            router.push("/admin/brands");
+        } catch (e) {
             console.log(e);
             setShowLoader(false);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
 
-
-export function updateBrand(values, item, setShowLoader, router, pageCount){
-    return async function updateBrandThunk(dispatch, getState){
+export function updateBrand(values, item, setShowLoader, router, pageCount) {
+    return async function updateBrandThunk(dispatch, getState) {
         const { brandsList } = getState().product.brands;
-        try{
-            const res = await axiosInstance.put(`/api/admin/brands/${item._id}`, values);
+        try {
+            const res = await axiosInstance.put(
+                `/api/admin/brands/${item._id}`,
+                values
+            );
             const { updatedBrand } = res.data;
 
-            const updatedBrands = brandsList.map(brand => brand._id===updatedBrand._id ? updatedBrand : brand )
+            const updatedBrands = brandsList.map((brand) =>
+                brand._id === updatedBrand._id ? updatedBrand : brand
+            );
             dispatch(setBrands(updatedBrands));
-            setShowLoader(false);                
+            setShowLoader(false);
 
-            if(router){
-                if(pageCount===1){
-                    router.push('/admin/brands');
-                }else{
+            if (router) {
+                if (pageCount === 1) {
+                    router.push("/admin/brands");
+                } else {
                     router.push(`/admin/brands?page=${pageCount}`);
                 }
             }
-
-        }catch(e){
+        } catch (e) {
             console.log(e);
             setShowLoader(false);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
 
-
-
-export function deleteBrand(brandId, setShowLoader, pageCount, router){
-    return async function deleteBrandThunk(dispatch, getState){
+export function deleteBrand(brandId, setShowLoader, pageCount, router) {
+    return async function deleteBrandThunk(dispatch, getState) {
         const { brandsList } = getState().product.brands;
-        try{
+        try {
             await axiosInstance.delete(`/api/admin/brands/${brandId}`);
-            const updatedBrands = brandsList.filter(brand => brand._id!==brandId);
+            const updatedBrands = brandsList.filter(
+                (brand) => brand._id !== brandId
+            );
             dispatch(setBrands(updatedBrands));
 
-            if(pageCount){
-                if(brandsList.length){
+            if (pageCount) {
+                if (brandsList.length) {
                     dispatch(resetBrandsStatus());
                     router.push(`/admin/brands?page=${pageCount}`);
-                }
-                else{
-                    const newPageCount = Number(pageCount)-1;
-                    if(newPageCount===1){
-                        router.push('/admin/brands');
-                    }else{
+                } else {
+                    const newPageCount = Number(pageCount) - 1;
+                    if (newPageCount === 1) {
+                        router.push("/admin/brands");
+                    } else {
                         router.push(`/admin/brands?page=${newPageCount}`);
                     }
                 }
+            } else {
+                router.push("/admin/brands");
             }
-            else{
-                router.push('/admin/brands');
-            }
-        }catch(e){
+        } catch (e) {
             console.log(e);
             setShowLoader(false);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
 
-
-
-
-export function getAllCategories(){      
-    return async function getAllCategoriesThunk(dispatch){
-        try{
-            const res = await axiosInstance.get('/api/categories');
+export function getAllCategories() {
+    return async function getAllCategoriesThunk(dispatch) {
+        try {
+            const res = await axiosInstance.get("/api/categories");
             dispatch(setAllCategories(res.data.result));
-        }catch(e){
+        } catch (e) {
             console.log(e);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
 
-
-export function createCategory(values, setShowLoader, router){
-    return async function createCategoryThunk(dispatch){
-        try{
-            await axiosInstance.post('/api/admin/categories', values);
-            router.push('/admin/categories');
-        }catch(e){
+export function createCategory(values, setShowLoader, router) {
+    return async function createCategoryThunk(dispatch) {
+        try {
+            await axiosInstance.post("/api/admin/categories", values);
+            router.push("/admin/categories");
+        } catch (e) {
             console.log(e);
             setShowLoader(false);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
 
-
-
-export function updateCategory(values, item, setShowLoader, router, pageCount){
-    return async function updateCategoryThunk(dispatch, getState){
+export function updateCategory(values, item, setShowLoader, router, pageCount) {
+    return async function updateCategoryThunk(dispatch, getState) {
         const { categoriesList } = getState().product.categories;
-        try{
-            const res = await axiosInstance.put(`/api/admin/categories/${item._id}`, values);
+        try {
+            const res = await axiosInstance.put(
+                `/api/admin/categories/${item._id}`,
+                values
+            );
             const { updatedCategory } = res.data;
 
-            const updatedCategories = categoriesList.map(category => category._id===updatedCategory._id ? updatedCategory : category );
+            const updatedCategories = categoriesList.map((category) =>
+                category._id === updatedCategory._id
+                    ? updatedCategory
+                    : category
+            );
             dispatch(setCategories(updatedCategories));
-            setShowLoader(false);                
+            setShowLoader(false);
 
-            if(router){
-                if(pageCount===1){
-                    router.push('/admin/categories');
-                }else{
+            if (router) {
+                if (pageCount === 1) {
+                    router.push("/admin/categories");
+                } else {
                     router.push(`/admin/categories?page=${pageCount}`);
                 }
             }
-
-        }catch(e){
+        } catch (e) {
             console.log(e);
             setShowLoader(false);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
 
-
-
-export function deleteCategory(categoryId, setShowLoader, pageCount, router){
-    return async function deleteCategoryThunk(dispatch, getState){
+export function deleteCategory(categoryId, setShowLoader, pageCount, router) {
+    return async function deleteCategoryThunk(dispatch, getState) {
         const { categoriesList } = getState().product.categories;
-        try{
+        try {
             await axiosInstance.delete(`/api/admin/categories/${categoryId}`);
-            const updatedCategories = categoriesList.filter(category => category._id!==categoryId);
+            const updatedCategories = categoriesList.filter(
+                (category) => category._id !== categoryId
+            );
             dispatch(setCategories(updatedCategories));
 
-            if(pageCount){
-                if(categoriesList.length){
+            if (pageCount) {
+                if (categoriesList.length) {
                     dispatch(resetCategoriesStatus());
                     router.push(`/admin/categories?page=${pageCount}`);
-                }
-                else{
-                    const newPageCount = Number(pageCount)-1;
-                    if(newPageCount===1){
-                        router.push('/admin/categories');
-                    }else{
+                } else {
+                    const newPageCount = Number(pageCount) - 1;
+                    if (newPageCount === 1) {
+                        router.push("/admin/categories");
+                    } else {
                         router.push(`/admin/categories?page=${newPageCount}`);
                     }
                 }
+            } else {
+                router.push("/admin/categories");
             }
-            else{
-                router.push('/admin/categories');
-            }
-
-        }catch(e){
+        } catch (e) {
             console.log(e);
             setShowLoader(false);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
 
-
-
-export function toggleUserRole(value, userId, setShowLoader){
-    return async function toggleUserRoleThunk(dispatch, getState){
+export function toggleUserRole(value, userId, setShowLoader) {
+    return async function toggleUserRoleThunk(dispatch, getState) {
         const { usersList } = getState().product.users;
-        try{
-            const res = await axiosInstance.patch(`/api/admin/users/${userId}`, value);
+        try {
+            const res = await axiosInstance.patch(
+                `/api/admin/users/${userId}`,
+                value
+            );
             const { updatedUser } = res.data;
 
-            const updatedUsers = usersList.map(user => user._id===updatedUser._id ? updatedUser : user );
+            const updatedUsers = usersList.map((user) =>
+                user._id === updatedUser._id ? updatedUser : user
+            );
             dispatch(setUsers(updatedUsers));
             setShowLoader(false);
-
-        }catch(e){
+        } catch (e) {
             console.log(e);
             setShowLoader(false);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
 
-
-
-export function deleteUser(userId, setShowLoader, pageCount, router){
-    return async function deleteUserThunk(dispatch, getState){
+export function deleteUser(userId, setShowLoader, pageCount, router) {
+    return async function deleteUserThunk(dispatch, getState) {
         const { usersList } = getState().product.users;
-        try{
+        try {
             await axiosInstance.delete(`/api/admin/users/${userId}`);
-            const updatedUsers = usersList.filter(user => user._id!==userId);
+            const updatedUsers = usersList.filter(
+                (user) => user._id !== userId
+            );
             dispatch(setUsers(updatedUsers));
 
-            if(pageCount){
-                if(usersList.length){
+            if (pageCount) {
+                if (usersList.length) {
                     dispatch(resetUsersStatus());
                     router.push(`/admin/users?page=${pageCount}`);
-                }
-                else{
-                    const newPageCount = Number(pageCount)-1;
-                    if(newPageCount===1){
-                        router.push('/admin/users');
-                    }else{
+                } else {
+                    const newPageCount = Number(pageCount) - 1;
+                    if (newPageCount === 1) {
+                        router.push("/admin/users");
+                    } else {
                         router.push(`/admin/users?page=${newPageCount}`);
                     }
                 }
+            } else {
+                router.push("/admin/users");
             }
-            else{
-                router.push('/admin/users');
-            }
-
-        }catch(e){
+        } catch (e) {
             console.log(e);
             setShowLoader(false);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
 
-
-
-export function createProduct(values, setShowLoader, router){
-    return async function createProductThunk(dispatch){
-        try{
-            await axiosInstance.post('/api/admin/products', values);
-            router.push('/admin/products');
-        }catch(e){
+export function createProduct(values, setShowLoader, router) {
+    return async function createProductThunk(dispatch) {
+        try {
+            await axiosInstance.post("/api/admin/products", values);
+            router.push("/admin/products");
+        } catch (e) {
             console.log(e);
             setShowLoader(false);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
 
-
-
-export function updateProduct(values, item, setShowLoader, router, pageCount){
-    return async function updateProductThunk(dispatch, getState){
+export function updateProduct(values, item, setShowLoader, router, pageCount) {
+    return async function updateProductThunk(dispatch, getState) {
         const { all } = getState().product.products;
-        try{
-            const res = await axiosInstance.put(`/api/admin/products/${item._id}`, values);
+        try {
+            const res = await axiosInstance.put(
+                `/api/admin/products/${item._id}`,
+                values
+            );
             const { updatedProduct } = res.data;
-          
-            const updatedProducts = all.map(product => product._id===updatedProduct._id ? updatedProduct : product );
-            dispatch(setProducts({ productType: 'all', products: updatedProducts }));
-            setShowLoader(false);                
 
-            if(router){
-                if(pageCount===1){
-                    router.push('/admin/products');
-                }else{
+            const updatedProducts = all.map((product) =>
+                product._id === updatedProduct._id ? updatedProduct : product
+            );
+            dispatch(
+                setProducts({ productType: "all", products: updatedProducts })
+            );
+            setShowLoader(false);
+
+            if (router) {
+                if (pageCount === 1) {
+                    router.push("/admin/products");
+                } else {
                     router.push(`/admin/products?page=${pageCount}`);
                 }
             }
-
-        }catch(e){
+        } catch (e) {
             console.log(e);
             setShowLoader(false);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
 
-
-
-export function deleteProduct(productId, setShowLoader, pageCount, router){
-    return async function deleteProductThunk(dispatch, getState){
+export function deleteProduct(productId, setShowLoader, pageCount, router) {
+    return async function deleteProductThunk(dispatch, getState) {
         const { all } = getState().product.products;
-        try{
+        try {
             await axiosInstance.delete(`/api/admin/products/${productId}`);
 
-            const updatedProducts = all.filter(product => product._id!==productId);
-            dispatch(setProducts({ productType: 'all', products: updatedProducts }));
+            const updatedProducts = all.filter(
+                (product) => product._id !== productId
+            );
+            dispatch(
+                setProducts({ productType: "all", products: updatedProducts })
+            );
 
-            if(pageCount){
-                if(all.length){
+            if (pageCount) {
+                if (all.length) {
                     dispatch(resetProductsStatus());
                     router.push(`/admin/products?page=${pageCount}`);
-                }
-                else{
-                    const newPageCount = Number(pageCount)-1;
-                    if(newPageCount===1){
-                        router.push('/admin/products');
-                    }else{
+                } else {
+                    const newPageCount = Number(pageCount) - 1;
+                    if (newPageCount === 1) {
+                        router.push("/admin/products");
+                    } else {
                         router.push(`/admin/products?page=${newPageCount}`);
                     }
                 }
+            } else {
+                router.push("/admin/products");
             }
-            else{
-                router.push('/admin/products');
-            }
-
-        }catch(e){
+        } catch (e) {
             console.log(e);
             setShowLoader(false);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
 
-
-export function createCoupon(values, setShowLoader, router){
-    return async function createCouponThunk(dispatch){
-        try{
-            await axiosInstance.post('/api/admin/coupons', values);
-            router.push('/admin/coupons');
-        }catch(e){
+export function createCoupon(values, setShowLoader, router) {
+    return async function createCouponThunk(dispatch) {
+        try {
+            await axiosInstance.post("/api/admin/coupons", values);
+            router.push("/admin/coupons");
+        } catch (e) {
             console.log(e);
             setShowLoader(false);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
 
-
-export function updateCoupon(values, item, setShowLoader, router, pageCount){
-    return async function updateCouponThunk(dispatch, getState){
+export function updateCoupon(values, item, setShowLoader, router, pageCount) {
+    return async function updateCouponThunk(dispatch, getState) {
         const { couponsList } = getState().product.coupons;
-        try{
-            const res = await axiosInstance.put(`/api/admin/coupons/${item._id}`, values);
+        try {
+            const res = await axiosInstance.put(
+                `/api/admin/coupons/${item._id}`,
+                values
+            );
             const { updatedCoupon } = res.data;
-          
-            const updatedCoupons = couponsList.map(coupon => coupon._id===updatedCoupon._id ? updatedCoupon : coupon ); 
-            dispatch(setCoupons(updatedCoupons));
-            setShowLoader(false);                
 
-            if(pageCount===1){
-                router.push('/admin/coupons');
-            }else{
+            const updatedCoupons = couponsList.map((coupon) =>
+                coupon._id === updatedCoupon._id ? updatedCoupon : coupon
+            );
+            dispatch(setCoupons(updatedCoupons));
+            setShowLoader(false);
+
+            if (pageCount === 1) {
+                router.push("/admin/coupons");
+            } else {
                 router.push(`/admin/coupons?page=${pageCount}`);
             }
-
-        }catch(e){
+        } catch (e) {
             console.log(e);
             setShowLoader(false);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
 
-
-export function deleteCoupon(couponId, setShowLoader, pageCount, router){
-    return async function deleteCouponThunk(dispatch, getState){
+export function deleteCoupon(couponId, setShowLoader, pageCount, router) {
+    return async function deleteCouponThunk(dispatch, getState) {
         const { couponsList } = getState().product.coupons;
-        try{
+        try {
             await axiosInstance.delete(`/api/admin/coupons/${couponId}`);
 
-            const updatedCoupons = couponsList.filter(coupon => coupon._id!==couponId);
+            const updatedCoupons = couponsList.filter(
+                (coupon) => coupon._id !== couponId
+            );
             dispatch(setCoupons(updatedCoupons));
 
-            if(pageCount){
-                if(couponsList.length){
+            if (pageCount) {
+                if (couponsList.length) {
                     dispatch(resetCouponsStatus());
                     router.push(`/admin/coupons?page=${pageCount}`);
-                }
-                else{
-                    const newPageCount = Number(pageCount)-1;
-                    if(newPageCount===1){
-                        router.push('/admin/coupons');
-                    }else{
+                } else {
+                    const newPageCount = Number(pageCount) - 1;
+                    if (newPageCount === 1) {
+                        router.push("/admin/coupons");
+                    } else {
                         router.push(`/admin/coupons?page=${newPageCount}`);
                     }
                 }
+            } else {
+                router.push("/admin/coupons");
             }
-            else{
-                router.push('/admin/coupons');
-            }
-
-        }catch(e){
+        } catch (e) {
             console.log(e);
             setShowLoader(false);
             dispatch(showErrorAlert(e.response.data.message));
         }
-    }
+    };
 }
