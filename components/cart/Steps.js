@@ -1,87 +1,115 @@
-import Link from 'next/link';
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { Box, Button } from "@mui/material";
 
-
 const style = {
     container: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '1200px',
-        margin: 'auto',
-        marginBottom: '24px'
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "1200px",
+        margin: "auto",
+        marginBottom: "24px",
     },
     stepBtn: {
-        height: '32px',
-        borderRadius: '16px',
-        fontSize: '14px',
+        height: "32px",
+        borderRadius: "16px",
+        fontSize: "14px",
         fontWeight: 600,
-        padding: '0.5rem 28px',
-        textTransform: 'capitalize'
+        padding: "0.5rem 28px",
+        textTransform: "capitalize",
     },
     selectedStep: {
-        backgroundColor: 'bg.azureBlue',
-        color: 'text.white',
-        '&:hover': {
-            backgroundColor: 'bg.azureBlue',
-            color: 'text.white',
-        }
+        backgroundColor: "bg.azureBlue",
+        color: "text.white",
+        "&:hover": {
+            backgroundColor: "bg.azureBlue",
+            color: "text.white",
+        },
     },
     unSelectedStep: {
-        backgroundColor: '#c3ddfd',
-        color: 'bg.royalBlue',
-        '&:hover': {
-            backgroundColor: 'bg.azureBlue',
-            color: 'text.white'
-        }
+        backgroundColor: "#c3ddfd",
+        color: "bg.royalBlue",
+        "&:hover": {
+            backgroundColor: "bg.azureBlue",
+            color: "text.white",
+        },
     },
     line: {
-        width: '50px',
-        height: '4px'
-    }
-}
+        width: "50px",
+        height: "4px",
+    },
+};
 
 const Steps = () => {
-
     const router = useRouter();
 
     return (
         <Box sx={style.container}>
-            <Link href='/cart'>
+            <Link href="/cart">
                 <a>
-                    <Button 
+                    <Button
                         style={style.stepBtn}
-                        sx={router.pathname==='/cart' || router.pathname==='/checkout' || router.pathname==='/payment' ? style.selectedStep : style.unSelectedStep}
-                    >1. Cart</Button>
+                        sx={
+                            router.pathname === "/cart" ||
+                            router.pathname === "/checkout" ||
+                            router.pathname === "/payment"
+                                ? style.selectedStep
+                                : style.unSelectedStep
+                        }
+                    >
+                        1. Cart
+                    </Button>
                 </a>
             </Link>
             <Box
                 style={style.line}
-                sx={router.pathname==='/checkout' || router.pathname==='/payment' ? style.selectedStep : style.unSelectedStep}
+                sx={
+                    router.pathname === "/checkout" ||
+                    router.pathname === "/payment"
+                        ? style.selectedStep
+                        : style.unSelectedStep
+                }
             ></Box>
-            <Link href='/checkout'>
+            <Link href="/checkout">
                 <a>
-                    <Button 
+                    <Button
                         style={style.stepBtn}
-                        sx={router.pathname==='/checkout' || router.pathname==='/payment' ? style.selectedStep : style.unSelectedStep}
-                    >2. Details</Button>
+                        sx={
+                            router.pathname === "/checkout" ||
+                            router.pathname === "/payment"
+                                ? style.selectedStep
+                                : style.unSelectedStep
+                        }
+                    >
+                        2. Details
+                    </Button>
                 </a>
             </Link>
             <Box
                 style={style.line}
-                sx={router.pathname==='/payment' ? style.selectedStep : style.unSelectedStep}
+                sx={
+                    router.pathname === "/payment"
+                        ? style.selectedStep
+                        : style.unSelectedStep
+                }
             ></Box>
-            <Link href='/payment'>
+            <Link href="/payment">
                 <a>
-                    <Button 
+                    <Button
                         style={style.stepBtn}
-                        sx={router.pathname==='/payment' ? style.selectedStep : style.unSelectedStep}
-                    >3. Payment</Button>
+                        sx={
+                            router.pathname === "/payment"
+                                ? style.selectedStep
+                                : style.unSelectedStep
+                        }
+                    >
+                        3. Payment
+                    </Button>
                 </a>
             </Link>
         </Box>
-    )
-}
+    );
+};
 
 export default Steps;

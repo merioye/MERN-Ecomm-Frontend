@@ -6,6 +6,7 @@ import cartReducer from "redux/cartSlice";
 import orderReducer from "redux/orderSlice";
 import socketReducer from "redux/socketSlice";
 import chatReducer from "redux/chatSlice";
+import wishlistReducer from "redux/wishlistSlice";
 
 const store = configureStore({
     reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
         order: orderReducer,
         socket: socketReducer,
         chat: chatReducer,
+        wishlist: wishlistReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({ serializableCheck: false }),

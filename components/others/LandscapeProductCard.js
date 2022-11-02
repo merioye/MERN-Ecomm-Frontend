@@ -12,6 +12,7 @@ import {
     Button,
 } from "@mui/material";
 import handleAddToCart from "utils/handleAddToCart";
+import handleAddToWishList from "utils/handleAddToWishList";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import Favorite from "@mui/icons-material/Favorite";
 import AddIcon from "@mui/icons-material/Add";
@@ -92,6 +93,9 @@ const style = {
 const LandscapeProductCard = ({ product }) => {
     const [count, setCount] = useState(0);
     const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+    const [isWishlistChecked, setIsWishlistChecked] = useState(false);
+    const [isWishlistCheckDisabled, setIsWishlistCheckDisabled] =
+        useState(false);
     const dispatch = useDispatch();
     const theme = useTheme();
 
@@ -114,6 +118,16 @@ const LandscapeProductCard = ({ product }) => {
         );
     };
 
+    const handleWishlistBtnClick = (e) => {
+        e.preventDefault();
+        handleAddToWishList(
+            e.target.checked,
+            product._id,
+            setIsWishlistChecked,
+            setIsWishlistCheckDisabled,
+            dispatch
+        );
+    };
     return (
         <Link href={`/product/${product._id}`}>
             <a>
@@ -231,6 +245,9 @@ const LandscapeProductCard = ({ product }) => {
                         icon={<FavoriteBorder />}
                         checkedIcon={<Favorite />}
                         sx={style.wishListBtn}
+                        checked={isWishlistChecked}
+                        onClick={handleWishlistBtnClick}
+                        disabled={isWishlistCheckDisabled}
                     />
                     {product.isOnSale && (
                         <Box sx={style.discountPer}>

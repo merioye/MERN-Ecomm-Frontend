@@ -1,268 +1,268 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { toggleFiltersVisibility } from "redux/productSlice";
-import { useTheme, Box, Grid, IconButton, Typography } from '@mui/material';
+import { useTheme, Box, Grid, IconButton, Typography } from "@mui/material";
 import HomePageSlider from "components/Home/HomePageSlider";
 import ServiceCard from "components/Home/ServiceCard";
 import HomePageSectionHeading from "components/Home/HomePageSectionHeading";
 import FeaturedBrandCard from "components/Home/FeaturedBrandCard";
 import CategoryCard from "components/Home/CategoryCard";
 import ProductCard from "components/shared/ProductCard";
-import FilterListIcon from '@mui/icons-material/FilterList';
+import FilterListIcon from "@mui/icons-material/FilterList";
 import Filters from "components/shared/Filters";
 import Carousel from "components/Home/Carousel";
-import ssrRequest from 'utils/ssrRequest';
-
-
-
+import ssrRequest from "utils/ssrRequest";
 
 const style = {
     mainContainer: {
-        width: '100%',
-        height: 'auto',
-        backgroundColor: 'bg.primary',
-        paddingBottom: '50px'
+        width: "100%",
+        height: "auto",
+        backgroundColor: "bg.primary",
+        paddingBottom: "50px",
     },
     itemsContainer: {
-        width: '1200px',
-        margin: 'auto',
-        marginBottom: '24px'
-    }
-}
-const Home = ( { categories, productsPriceRange, featuredBrands, flashDealProducts, featuredProducts, moreForYouProducts, newArrivalProducts, topRatedProducts } ) => {
-
+        width: "1200px",
+        margin: "auto",
+        marginBottom: "24px",
+    },
+};
+const Home = ({
+    categories,
+    productsPriceRange,
+    featuredBrands,
+    flashDealProducts,
+    featuredProducts,
+    moreForYouProducts,
+    newArrivalProducts,
+    topRatedProducts,
+}) => {
     const dispatch = useDispatch();
     const theme = useTheme();
 
-
-
     // removing '#_=_' hash from url if present(it is necessary bcz when you login with facebook it appends this hash to the url)
-    useEffect(()=>{
-        if (window.location.hash === "#_=_"){
+    useEffect(() => {
+        if (window.location.hash === "#_=_") {
             if (history.replaceState) {
                 const cleanHref = window.location.href.split("#")[0];
                 history.replaceState(null, null, cleanHref);
             } else {
                 window.location.hash = "";
             }
-            document.title = 'TeleCart';
+            document.title = "TeleCart";
         }
-    }, [])
-
-
+    }, []);
 
     return (
         <Box sx={style.mainContainer}>
+            <HomePageSlider />
 
-            <HomePageSlider/>
-
-            <Grid 
-                container 
-                justifyContent='space-between'
+            <Grid
+                container
+                justifyContent="space-between"
                 sx={style.itemsContainer}
             >
                 <ServiceCard
                     columns={2.6}
-                    iconBgColor='#fcd9bd'
-                    iconTextColor='pink.dark'
-                    title='Fast Delivery'
-                    body='Start from $10'
+                    iconBgColor="#fcd9bd"
+                    iconTextColor="pink.dark"
+                    title="Fast Delivery"
+                    body="Start from $10"
                 />
                 <ServiceCard
                     columns={2.6}
-                    iconBgColor='#c3ddfd'
-                    iconTextColor='bg.blue'
-                    title='Money Guarantee'
-                    body='7 days back'
+                    iconBgColor="#c3ddfd"
+                    iconTextColor="bg.blue"
+                    title="Money Guarantee"
+                    body="7 days back"
                 />
                 <ServiceCard
                     columns={2.6}
-                    iconBgColor='bg.silver'
-                    iconTextColor='text.primary'
-                    title='365 days'
-                    body='For free return'
+                    iconBgColor="bg.silver"
+                    iconTextColor="text.primary"
+                    title="365 days"
+                    body="For free return"
                 />
                 <ServiceCard
                     columns={2.6}
-                    iconBgColor='bg.green'
-                    iconTextColor='#0e9f6e'
-                    title='Payment'
-                    body='Secure system'
+                    iconBgColor="bg.green"
+                    iconTextColor="#0e9f6e"
+                    title="Payment"
+                    body="Secure system"
                 />
             </Grid>
 
-            <Grid 
-                container 
-                justifyContent='flex-end' 
-                alignItems='center'
+            <Grid
+                container
+                justifyContent="flex-end"
+                alignItems="center"
                 sx={style.itemsContainer}
             >
                 <Grid item>
-                    <Typography 
+                    <Typography
                         variant="body1"
-                        sx={{ color: 'text.primary', marginRight: '10px' }}
-                    >Filters :</Typography>
+                        sx={{ color: "text.primary", marginRight: "10px" }}
+                    >
+                        Filters :
+                    </Typography>
                 </Grid>
                 <Grid item>
-                    <IconButton onClick={()=> dispatch(toggleFiltersVisibility(true))}>
-                        <FilterListIcon sx={{ color: 'text.primary' }}/>
+                    <IconButton
+                        onClick={() => dispatch(toggleFiltersVisibility(true))}
+                    >
+                        <FilterListIcon sx={{ color: "text.primary" }} />
                     </IconButton>
                 </Grid>
             </Grid>
-            <Filters categories={categories} productsPriceRange={productsPriceRange}/>
+            <Filters
+                categories={categories}
+                productsPriceRange={productsPriceRange}
+            />
 
-            {
-                flashDealProducts.length
-                ?
+            {flashDealProducts.length ? (
                 <>
-                <HomePageSectionHeading
-                    heading='Flash Deals'
-                    link='/search?onSale=true'
-                />
-                <Carousel type='product' heading='Flash Deals' products={flashDealProducts}/>
+                    <HomePageSectionHeading
+                        heading="Flash Deals"
+                        link="/search?onSale=true"
+                    />
+                    <Carousel
+                        type="product"
+                        heading="Flash Deals"
+                        products={flashDealProducts}
+                    />
                 </>
-            :
-            null
-            }
-            {
-                featuredBrands.length
-                ?
+            ) : null}
+            {featuredBrands.length ? (
                 <>
-                <HomePageSectionHeading
-                    heading='Featured Brands'
-                    link='/search?isFeatured=true&isBrand=true'
-                />
-                <Grid 
-                    container
-                    gap={2.255}
-                    sx={style.itemsContainer}
-                    style={{ boxShadow: theme.palette.boxShadow.card, borderRadius: '8px', padding: '16px', marginBottom: '50px', backgroundColor: theme.palette.bg.secondary }}
-                >
-                    {
-                        featuredBrands.map((brand)=>{
-                            return <Grid item key={brand._id}>
-                                <FeaturedBrandCard key={brand._id} brand={brand}/>
-                            </Grid>
-                        })
-                    }
-                </Grid>
+                    <HomePageSectionHeading
+                        heading="Featured Brands"
+                        link="/search?isFeatured=true&isBrand=true"
+                    />
+                    <Grid
+                        container
+                        gap={2.255}
+                        sx={style.itemsContainer}
+                        style={{
+                            boxShadow: theme.palette.boxShadow.card,
+                            borderRadius: "8px",
+                            padding: "16px",
+                            marginBottom: "50px",
+                            backgroundColor: theme.palette.bg.secondary,
+                        }}
+                    >
+                        {featuredBrands.map((brand) => {
+                            return (
+                                <Grid item key={brand._id}>
+                                    <FeaturedBrandCard
+                                        key={brand._id}
+                                        brand={brand}
+                                    />
+                                </Grid>
+                            );
+                        })}
+                    </Grid>
                 </>
-                :
-                null
-            }
+            ) : null}
 
-            {
-                newArrivalProducts.length
-                ?
+            {newArrivalProducts.length ? (
                 <>
-                <HomePageSectionHeading
-                    heading='New Arrivals'
-                    link='/search?sort=date'
-                />
-                <Carousel type='smallProduct' heading='arrival' products={newArrivalProducts}/>
+                    <HomePageSectionHeading
+                        heading="New Arrivals"
+                        link="/search?sort=date"
+                    />
+                    <Carousel
+                        type="smallProduct"
+                        heading="arrival"
+                        products={newArrivalProducts}
+                    />
                 </>
-                :
-                null
-            }
+            ) : null}
 
-            {
-                topRatedProducts.length
-                ?
+            {topRatedProducts.length ? (
                 <>
-                <HomePageSectionHeading
-                    heading='Top Ratings'
-                    link='/search?topRated=true'
-                />
-                <Carousel type='smallProduct' heading='rating' products={topRatedProducts}/>
+                    <HomePageSectionHeading
+                        heading="Top Ratings"
+                        link="/search?topRated=true"
+                    />
+                    <Carousel
+                        type="smallProduct"
+                        heading="rating"
+                        products={topRatedProducts}
+                    />
                 </>
-                :
-                null
-            }
+            ) : null}
 
-            {
-                featuredProducts.length
-                ?
+            {featuredProducts.length ? (
                 <>
-                <HomePageSectionHeading
-                    heading='Featured Products'
-                    link='/search?isFeatured=true'
-                />
-                <Carousel type='product' heading='Featured Products' products={featuredProducts}/>
+                    <HomePageSectionHeading
+                        heading="Featured Products"
+                        link="/search?isFeatured=true"
+                    />
+                    <Carousel
+                        type="product"
+                        heading="Featured Products"
+                        products={featuredProducts}
+                    />
                 </>
-                :
-                null
-            }
+            ) : null}
 
-            {
-                categories.length
-                ?
+            {categories.length ? (
                 <>
-                <HomePageSectionHeading
-                    heading='Categories'
-                />
-                <Grid 
-                    container
-                    gap={3}
-                    sx={style.itemsContainer}
-                    style={{ marginBottom: '50px' }}
-                >
-                    {
-                        categories.map((category)=>{
-                            return <CategoryCard key={category._id} category={category}/>
-                        })
-                    }
-                </Grid>
+                    <HomePageSectionHeading heading="Categories" />
+                    <Grid
+                        container
+                        gap={3}
+                        sx={style.itemsContainer}
+                        style={{ marginBottom: "50px" }}
+                    >
+                        {categories.map((category) => {
+                            return (
+                                <CategoryCard
+                                    key={category._id}
+                                    category={category}
+                                />
+                            );
+                        })}
+                    </Grid>
                 </>
-                :
-                null
-            }
+            ) : null}
 
-            {
-                moreForYouProducts.length
-                ?
+            {moreForYouProducts.length ? (
                 <>
-                <HomePageSectionHeading
-                    heading='More For You'
-                    link='/search?sort=date'
-                />
-                <Grid 
-                    container
-                    gap={3}
-                    sx={style.itemsContainer}
-                >
-                    {
-                        moreForYouProducts.map((product)=>{
-                            return <Grid item key={product._id}>
-                                <ProductCard fromCarousel={false} product={product}/>
-                            </Grid>
-                        })
-                    }
-                </Grid>
+                    <HomePageSectionHeading
+                        heading="More For You"
+                        link="/search?sort=date"
+                    />
+                    <Grid container gap={3} sx={style.itemsContainer}>
+                        {moreForYouProducts.map((product) => {
+                            return (
+                                <Grid item key={product._id}>
+                                    <ProductCard
+                                        fromCarousel={false}
+                                        product={product}
+                                    />
+                                </Grid>
+                            );
+                        })}
+                    </Grid>
                 </>
-                :
-                null
-            }
-            
+            ) : null}
         </Box>
-    )
-}
+    );
+};
 
 export default Home;
 
-
-
-export const getServerSideProps = async ( { req, res } )=>{
-
+export const getServerSideProps = async ({ req, res }) => {
     const url = `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/products/home`;
     const [error, data] = await ssrRequest(req, res, url);
-    
-    if(!data){
+
+    if (!data) {
         return {
             redirect: {
                 statusCode: 307,
-                destination: '/'
-            }
-        }
+                destination: "/",
+            },
+        };
     }
     return {
         props: {
@@ -273,7 +273,7 @@ export const getServerSideProps = async ( { req, res } )=>{
             featuredProducts: data.featuredProducts,
             moreForYouProducts: data.moreForYouProducts,
             newArrivalProducts: data.newArrivalProducts,
-            topRatedProducts: data.topRatedProducts
-        }
-    }
-}
+            topRatedProducts: data.topRatedProducts,
+        },
+    };
+};

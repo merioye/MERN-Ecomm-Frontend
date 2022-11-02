@@ -10,14 +10,19 @@ import {
     Button,
     Tabs,
     Tab,
+    Checkbox,
+    FormControlLabel,
 } from "@mui/material";
 import ProductCard from "components/shared/ProductCard";
 import InputBox from "components/shared/InputBox";
 import ssrRequest from "utils/ssrRequest";
 import handleAddToCart from "utils/handleAddToCart";
+import handleAddToWishList from "utils/handleAddToWishList";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import StarIcon from "@mui/icons-material/Star";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import Favorite from "@mui/icons-material/Favorite";
 
 const style = {
     container: {
@@ -107,6 +112,12 @@ const style = {
         fontWeight: 600,
         marginBottom: "4px",
     },
+    wishListBtn: {
+        color: "text.light",
+        "&.Mui-checked": {
+            color: "pink.dark",
+        },
+    },
 };
 
 const labels = {
@@ -131,6 +142,9 @@ const SingleProduct = ({ product, relatedProducts }) => {
     );
     const [count, setCount] = useState(0);
     const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+    const [isWishlistChecked, setIsWishlistChecked] = useState(false);
+    const [isWishlistCheckDisabled, setIsWishlistCheckDisabled] =
+        useState(false);
     const [values, setValues] = useState({ review: "" });
     const [userRating, setUserRating] = useState(0);
     const [hover, setHover] = useState(-1);
@@ -273,7 +287,7 @@ const SingleProduct = ({ product, relatedProducts }) => {
                     </Typography>
                     <Typography
                         variant="body1"
-                        mb="24px"
+                        mb="10px"
                         sx={style.details}
                         style={
                             product.stock
@@ -283,7 +297,30 @@ const SingleProduct = ({ product, relatedProducts }) => {
                     >
                         {product.stock ? "Stock Available" : "Out Of Stock"}
                     </Typography>
-                    <Box sx={style.cartBtns}>
+                    <FormControlLabel
+                        sx={{ ...style.details }}
+                        control={
+                            <Checkbox
+                                size="medium"
+                                icon={<FavoriteBorder />}
+                                checkedIcon={<Favorite />}
+                                sx={style.wishListBtn}
+                            />
+                        }
+                        label="Add to wishlist"
+                        checked={isWishlistChecked}
+                        onChange={(e) =>
+                            handleAddToWishList(
+                                e.target.checked,
+                                product._id,
+                                setIsWishlistChecked,
+                                setIsWishlistCheckDisabled,
+                                dispatch
+                            )
+                        }
+                        disabled={isWishlistCheckDisabled}
+                    />
+                    <Box sx={style.cartBtns} mt="15px">
                         <Button
                             disabled={isBtnDisabled}
                             variant="outlined"

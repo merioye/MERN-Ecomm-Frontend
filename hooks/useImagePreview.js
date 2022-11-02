@@ -1,14 +1,10 @@
-import { useState, useEffect } from 'react';
-
-
+import { useState, useEffect } from "react";
 
 export const useImagePreview = (selectedImages) => {
-
     const [imagesPreviews, setImagesPreviews] = useState([]);
 
-
-    useEffect(()=>{
-        if(!selectedImages.length){
+    useEffect(() => {
+        if (!selectedImages.length) {
             setImagesPreviews([]);
             return;
         }
@@ -16,23 +12,19 @@ export const useImagePreview = (selectedImages) => {
         setImagesPreviews([]);
 
         // generating the urls of images
-        const previews = selectedImages.map(({ id, image })=>{
+        const previews = selectedImages.map(({ id, image }) => {
             const objectUrl = URL.createObjectURL(image);
-            return { id: id, url: objectUrl};
-        })
+            return { id: id, url: objectUrl };
+        });
         setImagesPreviews(previews);
 
         // free memory when ever this component is unmounted
-        return ()=>{
-
-            imagesPreviews.forEach(({ url })=>{
+        return () => {
+            imagesPreviews.forEach(({ url }) => {
                 URL.revokeObjectURL(url);
-            })
-
-        }
-
-    }, [selectedImages, setImagesPreviews])
-
+            });
+        };
+    }, [selectedImages, setImagesPreviews]);
 
     return { imagesPreviews };
-}
+};

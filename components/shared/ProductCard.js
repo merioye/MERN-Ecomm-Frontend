@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import handleAddToCart from "utils/handleAddToCart";
+import handleAddToWishList from "utils/handleAddToWishList";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
@@ -110,9 +111,14 @@ const style = {
         color: "text.primary",
     },
 };
-const ProductCard = ({ fromCarousel, product }) => {
+const ProductCard = ({ fromCarousel, product, isInWishlist }) => {
     const [count, setCount] = useState(0);
     const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+    const [isWishlistChecked, setIsWishlistChecked] = useState(
+        Boolean(isInWishlist)
+    );
+    const [isWishlistCheckDisabled, setIsWishlistCheckDisabled] =
+        useState(false);
     const dispatch = useDispatch();
     const theme = useTheme();
 
@@ -132,6 +138,16 @@ const ProductCard = ({ fromCarousel, product }) => {
             setCount,
             dispatch,
             setIsBtnDisabled
+        );
+    };
+    const handleWishlistBtnClick = (e) => {
+        e.preventDefault();
+        handleAddToWishList(
+            e.target.checked,
+            product._id,
+            setIsWishlistChecked,
+            setIsWishlistCheckDisabled,
+            dispatch
         );
     };
 
@@ -166,6 +182,9 @@ const ProductCard = ({ fromCarousel, product }) => {
                                 icon={<FavoriteBorder />}
                                 checkedIcon={<Favorite />}
                                 sx={style.wishListBtn}
+                                checked={isWishlistChecked}
+                                onClick={handleWishlistBtnClick}
+                                disabled={isWishlistCheckDisabled}
                             />
                             {product.isOnSale && (
                                 <Box sx={style.discountPer}>
