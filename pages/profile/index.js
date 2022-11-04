@@ -2,6 +2,7 @@ import Image from "next/image";
 import { useTheme, Box, Grid, Typography } from "@mui/material";
 import PageHeading from "components/cart/PageHeading";
 import UserDashboardSidebar from "components/shared/UserDashboardSidebar";
+import ssrRequest from "utils/ssrRequest";
 
 const style = {
     container: {
@@ -71,7 +72,13 @@ const style = {
         padding: "8px",
     },
 };
-const Profile = () => {
+const Profile = ({
+    user,
+    totalOrdersCount,
+    awaitingPaymentCount,
+    deliveredCount,
+    awaitingDeliveryCount,
+}) => {
     const theme = useTheme();
 
     return (
@@ -91,11 +98,19 @@ const Profile = () => {
                     >
                         <Box sx={style.profileImageContainer}>
                             <Image
-                                src="/images/man.svg"
+                                src={
+                                    user.avatar
+                                        ? user.avatar
+                                        : "/images/man.svg"
+                                }
                                 alt="profileImage"
                                 layout="fill"
                                 placeholder="blur"
-                                blurDataURL="/images/man.svg"
+                                blurDataURL={
+                                    user.avatar
+                                        ? user.avatar
+                                        : "/images/man.svg"
+                                }
                             />
                         </Box>
                         <Box sx={{ flex: "1 1 0px", ml: "12px" }}>
@@ -108,7 +123,7 @@ const Profile = () => {
                                         fontWeight: 600,
                                     }}
                                 >
-                                    Faheem Hassan
+                                    {user.name}
                                 </Typography>
                                 <Typography
                                     variant="body1"
@@ -137,7 +152,9 @@ const Profile = () => {
                                     variant="h3"
                                     sx={style.orderInfoCardCount}
                                 >
-                                    16
+                                    {totalOrdersCount < 10
+                                        ? `0${totalOrdersCount}`
+                                        : totalOrdersCount}
                                 </Typography>
                                 <Typography
                                     variant="body2"
@@ -161,7 +178,9 @@ const Profile = () => {
                                     variant="h3"
                                     sx={style.orderInfoCardCount}
                                 >
-                                    02
+                                    {awaitingPaymentCount < 10
+                                        ? `0${awaitingPaymentCount}`
+                                        : awaitingPaymentCount}
                                 </Typography>
                                 <Typography
                                     variant="body2"
@@ -185,7 +204,9 @@ const Profile = () => {
                                     variant="h3"
                                     sx={style.orderInfoCardCount}
                                 >
-                                    00
+                                    {deliveredCount < 10
+                                        ? `0${deliveredCount}`
+                                        : deliveredCount}
                                 </Typography>
                                 <Typography
                                     variant="body2"
@@ -194,7 +215,7 @@ const Profile = () => {
                                         textAlign: "center",
                                     }}
                                 >
-                                    Awaiting Shipment
+                                    Already Delivered
                                 </Typography>
                             </Box>
                         </Grid>
@@ -209,7 +230,9 @@ const Profile = () => {
                                     variant="h3"
                                     sx={style.orderInfoCardCount}
                                 >
-                                    01
+                                    {awaitingDeliveryCount < 10
+                                        ? `0${awaitingDeliveryCount}`
+                                        : awaitingDeliveryCount}
                                 </Typography>
                                 <Typography
                                     variant="body2"
@@ -237,7 +260,7 @@ const Profile = () => {
                         Full Name
                     </Typography>
                     <Typography variant="body1" sx={style.darkText}>
-                        Faheem Hassan
+                        {user.name}
                     </Typography>
                 </Box>
                 <Box sx={style.userAttribute}>
@@ -248,7 +271,7 @@ const Profile = () => {
                         Email
                     </Typography>
                     <Typography variant="body1" sx={style.darkText}>
-                        faheem@abc12344.com
+                        {user.email}
                     </Typography>
                 </Box>
                 <Box sx={style.userAttribute}>
@@ -259,7 +282,7 @@ const Profile = () => {
                         Phone
                     </Typography>
                     <Typography variant="body1" sx={style.darkText}>
-                        1234567890
+                        {user.phone}
                     </Typography>
                 </Box>
             </Box>
@@ -268,3 +291,25 @@ const Profile = () => {
 };
 
 export default Profile;
+
+export const getServerSideProps = async ({ req, res }) => {
+    const url = `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/profiles/profile`;
+    const [error, data] = await ssrRequest(req, res, url);
+    if (!data) {
+        return {
+            redirect: {
+                statusCode: 307,
+                destination: "/",
+            },
+        };
+    }
+    return {
+        props: {
+            user: data.user,
+            totalOrdersCount: data.totalOrdersCount,
+            awaitingPaymentCount: data.awaitingPaymentCount,
+            deliveredCount: data.deliveredCount,
+            awaitingDeliveryCount: data.awaitingDeliveryCount,
+        },
+    };
+};

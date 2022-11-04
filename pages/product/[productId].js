@@ -1,6 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
+import TimeAgo from "timeago-react";
 import { useDispatch } from "react-redux";
+import { addReview } from "redux/productSlice";
 import {
     useTheme,
     Box,
@@ -12,6 +14,7 @@ import {
     Tab,
     Checkbox,
     FormControlLabel,
+    CircularProgress,
 } from "@mui/material";
 import ProductCard from "components/shared/ProductCard";
 import InputBox from "components/shared/InputBox";
@@ -145,8 +148,10 @@ const SingleProduct = ({ product, relatedProducts }) => {
     const [isWishlistChecked, setIsWishlistChecked] = useState(false);
     const [isWishlistCheckDisabled, setIsWishlistCheckDisabled] =
         useState(false);
+    const [reviews, setReviews] = useState(product.reviews);
     const [values, setValues] = useState({ review: "" });
     const [userRating, setUserRating] = useState(0);
+    const [showLoader, setShowLoader] = useState(false);
     const [hover, setHover] = useState(-1);
     const [tab, setTab] = useState(0);
     const dispatch = useDispatch();
@@ -154,10 +159,10 @@ const SingleProduct = ({ product, relatedProducts }) => {
 
     const memoizedAverageRating = useMemo(() => {
         return (
-            product.reviews.reduce((acc, review) => acc + review.rating, 0) /
-            product.reviews.length
+            reviews.reduce((acc, review) => acc + review.rating, 0) /
+            reviews.length
         );
-    }, []);
+    }, [reviews]);
 
     useEffect(() => {
         setLargeImageSrc(product.images[0].imageUrl);
@@ -179,6 +184,24 @@ const SingleProduct = ({ product, relatedProducts }) => {
             setCount,
             dispatch,
             setIsBtnDisabled
+        );
+    };
+
+    const submitReview = async () => {
+        setShowLoader(true);
+        dispatch(
+            addReview(
+                {
+                    productId: product._id,
+                    rating: userRating,
+                    text: values.review,
+                },
+                reviews,
+                setReviews,
+                setUserRating,
+                setValues,
+                setShowLoader
+            )
         );
     };
 
@@ -263,10 +286,11 @@ const SingleProduct = ({ product, relatedProducts }) => {
                             <Rating
                                 size="small"
                                 value={
-                                    product.reviews.length
+                                    reviews.length
                                         ? memoizedAverageRating
                                         : null
                                 }
+                                precision={0.5}
                                 readOnly
                             />
                             <Typography
@@ -274,7 +298,7 @@ const SingleProduct = ({ product, relatedProducts }) => {
                                 sx={style.details}
                                 style={{ marginLeft: "8px", fontWeight: 600 }}
                             >
-                                ({product.reviews.length})
+                                ({reviews.length})
                             </Typography>
                         </Box>
                     </Box>
@@ -374,7 +398,7 @@ const SingleProduct = ({ product, relatedProducts }) => {
                         }}
                     />
                     <Tab
-                        label={`Reviews (${product.reviews.length})`}
+                        label={`Reviews (${reviews.length})`}
                         {...a11yProps(1)}
                         sx={{
                             fontSize: "14px",
@@ -402,7 +426,7 @@ const SingleProduct = ({ product, relatedProducts }) => {
 
             {tab === 1 && (
                 <Box sx={style.itemsContainer}>
-                    {product.reviews.map((review) => {
+                    {reviews.map((review) => {
                         return (
                             <Box sx={style.reviewContainer} key={review._id}>
                                 <Grid container gap="16px" mb="16px">
@@ -435,6 +459,7 @@ const SingleProduct = ({ product, relatedProducts }) => {
                                                 <Rating
                                                     size="small"
                                                     value={review.rating}
+                                                    precision={0.5}
                                                     readOnly
                                                 />
                                             </Grid>
@@ -458,9 +483,11 @@ const SingleProduct = ({ product, relatedProducts }) => {
                                                         marginTop: "-2px",
                                                     }}
                                                 >
-                                                    {new Date(
-                                                        review.updatedAt
-                                                    ).toLocaleDateString()}
+                                                    <TimeAgo
+                                                        datetime={
+                                                            review.updatedAt
+                                                        }
+                                                    />
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -481,7 +508,7 @@ const SingleProduct = ({ product, relatedProducts }) => {
                             fontSize: "25px",
                             fontWeight: 600,
                             marginBottom: "30px",
-                            marginTop: product.reviews.length ? "56px" : "0px",
+                            marginTop: reviews.length ? "56px" : "0px",
                         }}
                     >
                         Write a Review for this product
@@ -545,19 +572,29 @@ const SingleProduct = ({ product, relatedProducts }) => {
                     <Button
                         variant="contained"
                         sx={theme.containedBtn}
-                        style={{ marginTop: "24px" }}
+                        style={{ marginTop: "24px", width: "100px" }}
                         disabled={
-                            userRating && values.review.trim().length
+                            showLoader
+                                ? true
+                                : userRating && values.review.trim().length
                                 ? false
                                 : true
                         }
+                        onClick={submitReview}
                     >
-                        Submit
+                        {showLoader ? (
+                            <CircularProgress
+                                size={25}
+                                sx={{ color: theme.palette.pink.dark }}
+                            />
+                        ) : (
+                            "Submit"
+                        )}
                     </Button>
                 </Box>
             )}
 
-            {relatedProducts.length && (
+            {relatedProducts.length ? (
                 <Box sx={style.itemsContainer} style={{ marginTop: "60px" }}>
                     <Typography
                         variant="h3"
@@ -567,8 +604,8 @@ const SingleProduct = ({ product, relatedProducts }) => {
                         Related Products
                     </Typography>
                 </Box>
-            )}
-            {relatedProducts.length && (
+            ) : null}
+            {relatedProducts.length ? (
                 <Grid container gap={3} sx={style.itemsContainer}>
                     {relatedProducts.map((product) => {
                         return (
@@ -581,7 +618,7 @@ const SingleProduct = ({ product, relatedProducts }) => {
                         );
                     })}
                 </Grid>
-            )}
+            ) : null}
         </Box>
     );
 };

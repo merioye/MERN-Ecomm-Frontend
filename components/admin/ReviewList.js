@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
     useTheme,
     Box,
@@ -10,16 +9,24 @@ import {
     TableRow,
     TableCell,
     TableBody,
-    IconButton,
-    Pagination,
-    Rating,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Image from "next/image";
+import { useSelector } from "react-redux";
 import AdminSearchBox from "components/shared/AdminSearchBox";
+import ReviewListItem from "components/admin/ReviewListItem";
+import CustomPagination from "components/shared/CustomPagination";
+import debounce from "utils/debounce";
+import withPageInfo from "hocs/withPageInfo";
 
-const ReviewList = () => {
-    const [productSearchString, setProductSearchString] = useState("");
+const ReviewList = ({
+    data,
+    totalCount,
+    page,
+    setPage,
+    router,
+    search,
+    appendSearchQuery,
+}) => {
+    const { reviews } = useSelector((state) => state.product);
     const theme = useTheme();
 
     return (
@@ -43,8 +50,7 @@ const ReviewList = () => {
                 <Grid item sx={theme.adminSearchBoxContainer}>
                     <AdminSearchBox
                         placeholder="Search Product..."
-                        value={productSearchString}
-                        setValue={setProductSearchString}
+                        handleSearch={debounce(appendSearchQuery, 500)}
                     />
                 </Grid>
             </Grid>
@@ -84,85 +90,40 @@ const ReviewList = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow
-                                sx={{
-                                    "&:last-child td, &:last-child th": {
-                                        border: 0,
-                                    },
-                                }}
-                            >
-                                <TableCell sx={theme.adminTableBodyFirstCell}>
-                                    <Box sx={theme.adminTableImageContainer}>
-                                        <Image
-                                            src="/images/logo.png"
-                                            alt="productImage"
-                                            height="100%"
-                                            width="100%"
-                                            placeholder="blur"
-                                            blurDataURL="/images/logo.png"
-                                        />
-                                    </Box>
-                                    <Box>
-                                        <Typography
-                                            variant="body1"
-                                            sx={theme.adminTableCellText}
-                                            style={{
-                                                lineHeight: 1.75,
-                                                fontWeight: 600,
-                                            }}
-                                        >
-                                            Blue Premium T-shirt
-                                        </Typography>
-                                        <Typography
-                                            variant="body2"
-                                            sx={{
-                                                color: "text.light",
-                                                fontSize: "12px",
-                                                fontWeight: 600,
-                                            }}
-                                        >
-                                            #ldjfldjfljsldjf
-                                        </Typography>
-                                    </Box>
-                                </TableCell>
-                                <TableCell
-                                    align="center"
-                                    sx={theme.adminTableCellText}
-                                    style={{ minWidth: "130px" }}
-                                >
-                                    Nathan Clark
-                                </TableCell>
-                                <TableCell
-                                    sx={{
-                                        color: "text.primary",
-                                        fontSize: "12px",
-                                        fontWeight: 600,
-                                        minWidth: "400px",
-                                    }}
-                                >
-                                    <q>
-                                        But I must explain to you how all this
-                                        of denouncing pleasure.
-                                    </q>
-                                </TableCell>
-                                <TableCell align="center">
-                                    <Rating value={3} readOnly />
-                                </TableCell>
-                                <TableCell align="center">
-                                    <IconButton sx={theme.actionBtn}>
-                                        <DeleteIcon sx={theme.actionBtnIcon} />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
+                            {reviews.status
+                                ? reviews.reviewsList.length
+                                    ? reviews.reviewsList.map((review) => (
+                                          <ReviewListItem
+                                              review={review}
+                                              key={review._id}
+                                          />
+                                      ))
+                                    : null
+                                : data.length
+                                ? data.map((review) => (
+                                      <ReviewListItem
+                                          review={review}
+                                          key={review._id}
+                                      />
+                                  ))
+                                : null}
                         </TableBody>
                     </Table>
                 </TableContainer>
                 <Box sx={theme.adminTablePaginationContainer}>
-                    <Pagination count={10} variant="outlined" color="primary" />
+                    <CustomPagination
+                        totalCount={totalCount}
+                        page={page}
+                        setPage={setPage}
+                        router={router}
+                        pageName="reviews"
+                        search={search}
+                        fromAdmin={true}
+                    />
                 </Box>
             </Box>
         </Box>
     );
 };
 
-export default ReviewList;
+export default withPageInfo(ReviewList);

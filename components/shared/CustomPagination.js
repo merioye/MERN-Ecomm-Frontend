@@ -40,19 +40,43 @@ const CustomPagination = ({
                     const queryString = qs.stringify(queryOptions);
                     router.push(`/${pageName}?${queryString}`);
                 } else {
-                    if (search) {
-                        if (value === 1) {
-                            router.push(`/admin/${pageName}?search=${search}`);
+                    if (pageName === "reviews") {
+                        if (search) {
+                            if (value === 1) {
+                                router.push(
+                                    `/admin/products/reviews?search=${search}`
+                                );
+                            } else {
+                                router.push(
+                                    `/admin/products/reviews?page=${value}&search=${search}`
+                                );
+                            }
                         } else {
-                            router.push(
-                                `/admin/${pageName}?page=${value}&search=${search}`
-                            );
+                            if (value === 1) {
+                                router.push(`/admin/products/reviews`);
+                            } else {
+                                router.push(
+                                    `/admin/products/reviews?page=${value}`
+                                );
+                            }
                         }
                     } else {
-                        if (value === 1) {
-                            router.push(`/admin/${pageName}`);
+                        if (search) {
+                            if (value === 1) {
+                                router.push(
+                                    `/admin/${pageName}?search=${search}`
+                                );
+                            } else {
+                                router.push(
+                                    `/admin/${pageName}?page=${value}&search=${search}`
+                                );
+                            }
                         } else {
-                            router.push(`/admin/${pageName}?page=${value}`);
+                            if (value === 1) {
+                                router.push(`/admin/${pageName}`);
+                            } else {
+                                router.push(`/admin/${pageName}?page=${value}`);
+                            }
                         }
                     }
                 }

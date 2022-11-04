@@ -91,6 +91,7 @@ const SmallProductCard = ({ heading, product }) => {
                                                 : null
                                         }
                                         size="small"
+                                        precision={0.5}
                                         readOnly
                                     />
                                 </Grid>

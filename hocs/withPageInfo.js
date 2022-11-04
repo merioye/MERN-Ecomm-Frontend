@@ -6,6 +6,7 @@ const withPageInfo = (WrappedComponent) => {
         const [page, setPage] = useState(0);
         const router = useRouter();
         const { pageName, page: pageCount, search } = router.query;
+        console.log(router.pathname);
 
         useEffect(() => {
             if (!pageCount) setPage(1);
@@ -13,10 +14,18 @@ const withPageInfo = (WrappedComponent) => {
         }, [pageCount]);
 
         const appendSearchQuery = (value) => {
-            if (!value) {
-                router.push(`/admin/${pageName}`);
+            if (router.pathname.endsWith("reviews")) {
+                if (!value) {
+                    router.push(`/admin/${pageName}/reviews`);
+                } else {
+                    router.push(`/admin/${pageName}/reviews?search=${value}`);
+                }
             } else {
-                router.push(`/admin/${pageName}?search=${value}`);
+                if (!value) {
+                    router.push(`/admin/${pageName}`);
+                } else {
+                    router.push(`/admin/${pageName}?search=${value}`);
+                }
             }
         };
 

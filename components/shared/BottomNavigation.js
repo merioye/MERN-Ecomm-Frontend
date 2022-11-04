@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 import { useTheme, Box, Grid, Typography } from "@mui/material";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
@@ -48,6 +49,7 @@ const style = {
     },
 };
 const BottomNavigation = () => {
+    const { cartItems } = useSelector((state) => state.cart);
     const router = useRouter();
     const theme = useTheme();
 
@@ -135,7 +137,9 @@ const BottomNavigation = () => {
                         </Grid>
                     </a>
                 </Link>
-                <Box sx={style.cartItemsCount}>3</Box>
+                {cartItems.length ? (
+                    <Box sx={style.cartItemsCount}>{cartItems.length}</Box>
+                ) : null}
             </Grid>
             <Grid item>
                 <Link href="/profile">

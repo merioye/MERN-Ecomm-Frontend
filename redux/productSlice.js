@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "config/axios";
-import { showErrorAlert } from "redux/alertSlice";
+import { showErrorAlert, showSuccessAlert } from "redux/alertSlice";
 
 const productSlice = createSlice({
     name: "product",
@@ -30,6 +30,10 @@ const productSlice = createSlice({
         coupons: {
             status: false,
             couponsList: [],
+        },
+        reviews: {
+            status: false,
+            reviewsList: [],
         },
     },
     reducers: {
@@ -91,6 +95,15 @@ const productSlice = createSlice({
                 couponsList: state.coupons.couponsList,
             };
         },
+        setReviews(state, action) {
+            state.reviews = { status: true, reviewsList: action.payload };
+        },
+        resetReviewsStatus(state, action) {
+            state.reviews = {
+                status: false,
+                reviewsList: state.reviews.reviewsList,
+            };
+        },
     },
 });
 
@@ -110,6 +123,8 @@ export const {
     resetProductsStatus,
     setCoupons,
     resetCouponsStatus,
+    setReviews,
+    resetReviewsStatus,
 } = productSlice.actions;
 
 export default productSlice.reducer;
@@ -500,6 +515,69 @@ export function deleteCoupon(couponId, setShowLoader, pageCount, router) {
                 }
             } else {
                 router.push("/admin/coupons");
+            }
+        } catch (e) {
+            console.log(e);
+            setShowLoader(false);
+            dispatch(showErrorAlert(e.response.data.message));
+        }
+    };
+}
+
+export function addReview(
+    values,
+    reviews,
+    setReviews,
+    setUserRating,
+    setValues,
+    setShowLoader
+) {
+    return async function addReviewThunk(dispatch) {
+        try {
+            const res = await axiosInstance.post("/api/reviews", values);
+
+            const filteredReviews = reviews.filter(
+                (r) => r._id !== res.data.review._id
+            );
+            setReviews([res.data.review, ...filteredReviews]);
+            setUserRating(0);
+            setValues({ review: " " });
+            setShowLoader(false);
+            dispatch(showSuccessAlert(res.data.message));
+        } catch (e) {
+            console.log(e);
+            setShowLoader(false);
+            dispatch(showErrorAlert(e.response.data.message));
+        }
+    };
+}
+
+export function deleteReview(reviewId, setShowLoader, pageCount, router) {
+    return async function deleteReviewThunk(dispatch, getState) {
+        const { reviewsList } = getState().product.reviews;
+        try {
+            await axiosInstance.delete(`/api/admin/reviews/${reviewId}`);
+            const updatedReviews = reviewsList.filter(
+                (review) => review._id !== reviewId
+            );
+            dispatch(setReviews(updatedReviews));
+
+            if (pageCount) {
+                if (reviewsList.length) {
+                    dispatch(resetReviewsStatus());
+                    router.push(`/admin/products/reviews?page=${pageCount}`);
+                } else {
+                    const newPageCount = Number(pageCount) - 1;
+                    if (newPageCount === 1) {
+                        router.push("/admin/products/reviews");
+                    } else {
+                        router.push(
+                            `/admin/products/reviews?page=${newPageCount}`
+                        );
+                    }
+                }
+            } else {
+                router.push("/admin/products/reviews");
             }
         } catch (e) {
             console.log(e);

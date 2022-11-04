@@ -213,6 +213,7 @@ const ProductCard = ({ fromCarousel, product, isInWishlist }) => {
                                             : null
                                     }
                                     size="small"
+                                    precision={0.5}
                                     readOnly
                                 />
                                 <Grid container gap="8px" mt="4px">

@@ -1,4 +1,12 @@
-import { Box, Typography, Button, Divider } from "@mui/material";
+import { useState } from "react";
+import { useRouter } from "next/router";
+import {
+    Box,
+    Typography,
+    Button,
+    Divider,
+    CircularProgress,
+} from "@mui/material";
 import Link from "next/link";
 import Popup from "components/shared/Popup";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -6,7 +14,8 @@ import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutUser } from "redux/authSlice";
 
 const style = {
     profileMenuPopup: {
@@ -32,7 +41,15 @@ const style = {
 };
 const NavProfilePopup = ({ profilePopup, setProfilePopup, fromDashboard }) => {
     const { user } = useSelector((state) => state.auth);
+    const [showLoader, setShowLoader] = useState(false);
+    const dispatch = useDispatch();
+    const router = useRouter();
 
+    const handleLogout = () => {
+        setShowLoader(true);
+        setProfilePopup(null);
+        dispatch(logoutUser(setShowLoader, router));
+    };
     return (
         <Popup
             popup={profilePopup}
@@ -72,62 +89,77 @@ const NavProfilePopup = ({ profilePopup, setProfilePopup, fromDashboard }) => {
 
                 {user?.role === "admin"
                     ? !fromDashboard && (
-                          <Link href="/admin/dashboard" passHref>
-                              <Button
-                                  startIcon={
-                                      <DashboardIcon
-                                          sx={{ color: "text.primary" }}
-                                      />
-                                  }
-                                  sx={style.profileLinkBtn}
-                              >
-                                  dashboard
-                              </Button>
-                          </Link>
+                          <Button
+                              startIcon={
+                                  <DashboardIcon
+                                      sx={{ color: "text.primary" }}
+                                  />
+                              }
+                              sx={style.profileLinkBtn}
+                              onClick={() => {
+                                  setProfilePopup(null);
+                                  router.push("/admin/dashboard");
+                              }}
+                          >
+                              dashboard
+                          </Button>
                       )
                     : null}
 
-                <Link href="/profile" passHref>
-                    <Button
-                        startIcon={
-                            <PersonIcon sx={{ color: "text.primary" }} />
-                        }
-                        sx={style.profileLinkBtn}
-                    >
-                        profile
-                    </Button>
-                </Link>
-
-                <Link href="/orders" passHref>
-                    <Button
-                        startIcon={
-                            <AssignmentIcon sx={{ color: "text.primary" }} />
-                        }
-                        sx={style.profileLinkBtn}
-                    >
-                        my orders
-                    </Button>
-                </Link>
-
-                <Link href="/profile/settings" passHref>
-                    <Button
-                        startIcon={
-                            <SettingsIcon sx={{ color: "text.primary" }} />
-                        }
-                        sx={style.profileLinkBtn}
-                    >
-                        settings
-                    </Button>
-                </Link>
-
-                <Divider light={true} sx={{ margin: "0.5rem 0px" }} />
+                <Button
+                    startIcon={<PersonIcon sx={{ color: "text.primary" }} />}
+                    sx={style.profileLinkBtn}
+                    onClick={() => {
+                        setProfilePopup(null);
+                        router.push("/profile");
+                    }}
+                >
+                    profile
+                </Button>
 
                 <Button
-                    startIcon={<LogoutIcon sx={{ color: "text.primary" }} />}
+                    startIcon={
+                        <AssignmentIcon sx={{ color: "text.primary" }} />
+                    }
                     sx={style.profileLinkBtn}
+                    onClick={() => {
+                        setProfilePopup(null);
+                        router.push("/orders");
+                    }}
                 >
-                    logout
+                    my orders
                 </Button>
+
+                <Button
+                    startIcon={<SettingsIcon sx={{ color: "text.primary" }} />}
+                    sx={style.profileLinkBtn}
+                    onClick={() => {
+                        setProfilePopup(null);
+                        router.push("/profile/settings");
+                    }}
+                >
+                    settings
+                </Button>
+
+                <Divider light={true} sx={{ margin: "0.5rem 0px" }} />
+                {showLoader ? (
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                        <CircularProgress
+                            size={30}
+                            sx={{ color: "pink.dark" }}
+                        />
+                    </Box>
+                ) : (
+                    <Button
+                        startIcon={
+                            <LogoutIcon sx={{ color: "text.primary" }} />
+                        }
+                        sx={style.profileLinkBtn}
+                        onClick={handleLogout}
+                    >
+                        logout
+                    </Button>
+                )}
             </Box>
         </Popup>
     );

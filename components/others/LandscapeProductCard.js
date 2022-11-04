@@ -157,6 +157,7 @@ const LandscapeProductCard = ({ product }) => {
                                     ? memoizedAverageRating
                                     : null
                             }
+                            precision={0.5}
                             readOnly
                         />
 

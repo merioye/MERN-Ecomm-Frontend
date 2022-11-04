@@ -4,15 +4,16 @@ import {
     Drawer,
     Box,
     Typography,
-    IconButton,
     List,
     Collapse,
     Button,
+    CircularProgress,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleMobileSidebar } from "redux/productSlice";
+import { logoutUser } from "redux/authSlice";
 import { useDeviceSize } from "hooks/useDeviceSize";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -119,6 +120,17 @@ const style = {
             backgroundColor: "bg.royalBlue",
         },
     },
+    logoutPlaceholderBtn: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#e0e0e0",
+
+        borderRadius: "8px",
+        position: "absolute",
+        bottom: "0px",
+        cursor: "not-allowed",
+    },
 };
 
 const SidebarContent = () => {
@@ -127,6 +139,8 @@ const SidebarContent = () => {
         useState(false);
     const [openBrandsNestedList, setOpenBrandsNestedList] = useState(false);
     const [openCouponsNestedList, setOpenCouponsNestedList] = useState(false);
+    const [showLoader, setShowLoader] = useState(false);
+    const dispatch = useDispatch();
     const router = useRouter();
     const { query, asPath } = router;
     const { pageName, id } = query;
@@ -160,6 +174,11 @@ const SidebarContent = () => {
             setOpenCouponsNestedList(false);
         }
     }, [pageName]);
+
+    const handleLogout = () => {
+        setShowLoader(true);
+        dispatch(logoutUser(setShowLoader, router));
+    };
 
     return (
         <>
@@ -679,16 +698,32 @@ const SidebarContent = () => {
                     </List>
                 </Collapse>
 
-                <Box style={theme.authBtnStyle} sx={style.logoutBtn}>
-                    <LogoutIcon
-                        sx={{
-                            ...style.menuItemIcon,
-                            mr: 1,
-                            color: "text.white",
-                        }}
-                    />{" "}
-                    logout
-                </Box>
+                {showLoader ? (
+                    <Box
+                        style={theme.authBtnStyle}
+                        sx={style.logoutPlaceholderBtn}
+                    >
+                        <CircularProgress
+                            size={25}
+                            sx={{ color: "pink.dark" }}
+                        />
+                    </Box>
+                ) : (
+                    <Box
+                        style={theme.authBtnStyle}
+                        sx={style.logoutBtn}
+                        onClick={handleLogout}
+                    >
+                        <LogoutIcon
+                            sx={{
+                                ...style.menuItemIcon,
+                                mr: 1,
+                                color: "text.white",
+                            }}
+                        />
+                        logout
+                    </Box>
+                )}
             </List>
         </>
     );

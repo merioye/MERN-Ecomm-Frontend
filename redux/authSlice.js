@@ -98,13 +98,33 @@ export function getUser() {
 export function updateUser(values, setShowLoader, userData, setUserData) {
     return async function updateUserThunk(dispatch) {
         try {
-            const res = await axiosInstance.put("/api/users/user", values);
+            const res = await axiosInstance.put(
+                "/api/profiles/profile",
+                values
+            );
             setShowLoader(false);
             dispatch(setUser(res.data.user));
             dispatch(showSuccessAlert("Profile has been updated successfully"));
             if (userData.password.trim().length) {
                 setUserData({ ...userData, password: "" });
             }
+        } catch (e) {
+            console.log(e);
+            setShowLoader(false);
+            dispatch(showErrorAlert(e.response.data.message));
+        }
+    };
+}
+
+export function logoutUser(setShowLoader, router) {
+    return async function logoutUserThunk(dispatch) {
+        try {
+            const res = await axiosInstance.get("/api/logout");
+            router.push("/");
+
+            dispatch(setUser(null));
+            dispatch(showSuccessAlert(res.data.message));
+            setShowLoader(false);
         } catch (e) {
             console.log(e);
             setShowLoader(false);
