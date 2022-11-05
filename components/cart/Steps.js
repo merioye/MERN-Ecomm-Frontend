@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 const style = {
     container: {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        width: "1200px",
+        width: { xs: "90%", lg: "1200px" },
         margin: "auto",
         marginBottom: "24px",
     },
@@ -16,7 +16,6 @@ const style = {
         borderRadius: "16px",
         fontSize: "14px",
         fontWeight: 600,
-        padding: "0.5rem 28px",
         textTransform: "capitalize",
     },
     selectedStep: {
@@ -36,7 +35,7 @@ const style = {
         },
     },
     line: {
-        width: "50px",
+        width: { xs: "30px", sm: "50px" },
         height: "4px",
     },
 };
@@ -63,12 +62,11 @@ const Steps = () => {
                 </a>
             </Link>
             <Box
-                style={style.line}
                 sx={
                     router.pathname === "/checkout" ||
                     router.pathname === "/payment"
-                        ? style.selectedStep
-                        : style.unSelectedStep
+                        ? { ...style.selectedStep, ...style.line }
+                        : { ...style.unSelectedStep, ...style.line }
                 }
             ></Box>
             <Link href="/checkout">
@@ -87,11 +85,11 @@ const Steps = () => {
                 </a>
             </Link>
             <Box
-                style={style.line}
                 sx={
+                    router.pathname === "/checkout" ||
                     router.pathname === "/payment"
-                        ? style.selectedStep
-                        : style.unSelectedStep
+                        ? { ...style.selectedStep, ...style.line }
+                        : { ...style.unSelectedStep, ...style.line }
                 }
             ></Box>
             <Link href="/payment">

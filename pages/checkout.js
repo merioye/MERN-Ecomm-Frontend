@@ -20,11 +20,11 @@ import ssrRequest from "utils/ssrRequest";
 const style = {
     container: {
         backgroundColor: "bg.primary",
-        padding: "40px",
+        padding: "40px 0px",
         width: "100%",
     },
     itemsContainer: {
-        width: "1200px",
+        width: { xs: "90%", lg: "1200px" },
         margin: "auto",
     },
     addressContainer: {
@@ -58,8 +58,8 @@ const AddressDetails = ({ values, setValues }) => {
             <Typography variant="body1" sx={style.addressTitle}>
                 Shipping Address
             </Typography>
-            <Grid container justifyContent="space-between" mb="16px">
-                <Grid item xs={5.5}>
+            <Grid container gap="16px" justifyContent="space-between" mb="16px">
+                <Grid item xs={12} md={5.5}>
                     <InputBox
                         label="Full Name"
                         type="text"
@@ -71,7 +71,7 @@ const AddressDetails = ({ values, setValues }) => {
                         fromAdmin={false}
                     />
                 </Grid>
-                <Grid item xs={5.5}>
+                <Grid item xs={12} md={5.5}>
                     <InputBox
                         label="Phone No"
                         type="number"
@@ -84,8 +84,8 @@ const AddressDetails = ({ values, setValues }) => {
                     />
                 </Grid>
             </Grid>
-            <Grid container justifyContent="space-between" mb="16px">
-                <Grid item xs={5.5}>
+            <Grid container gap="16px" justifyContent="space-between" mb="16px">
+                <Grid item xs={12} md={5.5}>
                     <InputBox
                         label="Country"
                         type="text"
@@ -97,7 +97,7 @@ const AddressDetails = ({ values, setValues }) => {
                         fromAdmin={false}
                     />
                 </Grid>
-                <Grid item xs={5.5}>
+                <Grid item xs={12} md={5.5}>
                     <InputBox
                         label="State"
                         type="text"
@@ -110,8 +110,8 @@ const AddressDetails = ({ values, setValues }) => {
                     />
                 </Grid>
             </Grid>
-            <Grid container justifyContent="space-between" mb="16px">
-                <Grid item xs={5.5}>
+            <Grid container gap="16px" justifyContent="space-between" mb="16px">
+                <Grid item xs={12} md={5.5}>
                     <InputBox
                         label="City"
                         type="text"
@@ -123,7 +123,7 @@ const AddressDetails = ({ values, setValues }) => {
                         fromAdmin={false}
                     />
                 </Grid>
-                <Grid item xs={5.5}>
+                <Grid item xs={12} md={5.5}>
                     <InputBox
                         label="Zip Code"
                         type="number"
@@ -136,8 +136,8 @@ const AddressDetails = ({ values, setValues }) => {
                     />
                 </Grid>
             </Grid>
-            <Grid container justifyContent="space-between">
-                <Grid item xs={5.5}>
+            <Grid container gap="16px" justifyContent="space-between">
+                <Grid item xs={12} md={5.5}>
                     <InputBox
                         label="Address 1"
                         type="text"
@@ -149,7 +149,7 @@ const AddressDetails = ({ values, setValues }) => {
                         fromAdmin={false}
                     />
                 </Grid>
-                <Grid item xs={5.5}>
+                <Grid item xs={12} md={5.5}>
                     <TextField
                         label="Address 2"
                         type="text"
@@ -229,8 +229,14 @@ const CheckoutPage = ({ cartItems, voucher, user }) => {
     return (
         <Box sx={style.container}>
             <Steps />
-            <Grid container gap={3} sx={style.itemsContainer}>
-                <Grid item xs={8}>
+            <Grid
+                container
+                justifyContent="center"
+                gap={3}
+                flexDirection={{ xs: "column-reverse", xm: "row" }}
+                sx={style.itemsContainer}
+            >
+                <Grid item xs={12} xm={7} lg={8}>
                     <FormControl fullWidth>
                         <form onSubmit={proceedToPayment}>
                             <Grid container sx={{ width: "100%" }}>
@@ -244,9 +250,10 @@ const CheckoutPage = ({ cartItems, voucher, user }) => {
                                 <Grid item sx={{ width: "100%" }}>
                                     <Grid
                                         container
+                                        gap={2}
                                         justifyContent="space-between"
                                     >
-                                        <Grid item xs={5.5}>
+                                        <Grid item xs={12} md={5.5}>
                                             <Link href="/cart">
                                                 <a>
                                                     <Button
@@ -261,7 +268,7 @@ const CheckoutPage = ({ cartItems, voucher, user }) => {
                                                 </a>
                                             </Link>
                                         </Grid>
-                                        <Grid item xs={5.5}>
+                                        <Grid item xs={12} md={5.5}>
                                             <Button
                                                 variant="contained"
                                                 type="submit"
@@ -279,7 +286,7 @@ const CheckoutPage = ({ cartItems, voucher, user }) => {
                         </form>
                     </FormControl>
                 </Grid>
-                <Grid item xs={3.75}>
+                <Grid item xs={12} xm={4} lg={3.75}>
                     <AmountSummary
                         fromDetails={true}
                         cartItems={cartItems}

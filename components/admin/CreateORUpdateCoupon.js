@@ -285,6 +285,7 @@ const CreateORUpdateCoupon = ({
                         <Grid
                             container
                             justifyContent="space-between"
+                            gap="24px"
                             mb="24px"
                         >
                             <Grid item sx={style.inputContainer}>
@@ -316,6 +317,7 @@ const CreateORUpdateCoupon = ({
                         <Grid
                             container
                             justifyContent="space-between"
+                            gap="24px"
                             mb="24px"
                         >
                             <Grid item sx={style.inputContainer}>

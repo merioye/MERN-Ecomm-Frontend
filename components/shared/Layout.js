@@ -21,8 +21,8 @@ const style = {
     },
     openChatBoxBtn: {
         position: "fixed",
-        bottom: { xm: "30px", xs: "90px" },
-        right: "30px",
+        bottom: { xm: "30px", xs: "80px" },
+        right: { xm: "30px", xs: "20px" },
         backgroundColor: "bg.azureBlue",
         "&:hover": {
             backgroundColor: "bg.azureBlue",
@@ -65,7 +65,9 @@ const Layout = ({ children }) => {
         <Box sx={style.container}>
             <NextNProgress color={theme.palette.pink.dark} />
             <Navbar />
-            <Box sx={{ flex: 1, marginTop: "80px" }}>{children}</Box>
+            <Box sx={{ flex: 1, marginTop: { xs: "65px", m: "80px" } }}>
+                {children}
+            </Box>
             <Footer />
             <BottomNavigation />
             {alert.showAlert && <CustomAlert />}

@@ -40,8 +40,8 @@ const style = {
     },
     emptyCartImageContainer: {
         position: "relative",
-        height: { xs: "150px", md: "300px" },
-        width: { xs: "200px", md: "400px" },
+        height: { xs: "150px", m: "300px" },
+        width: { xs: "200px", m: "400px" },
     },
 };
 

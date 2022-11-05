@@ -33,11 +33,11 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 const style = {
     container: {
         backgroundColor: "bg.primary",
-        padding: "40px",
+        padding: "40px 0px",
         width: "100%",
     },
     itemsContainer: {
-        width: "1200px",
+        width: { xs: "90%", lg: "1200px" },
         margin: "auto",
     },
     paymentContainer: {
@@ -149,7 +149,11 @@ const PaymentForm = ({ totalAmount, discountAmount, cartItems }) => {
                                 />
 
                                 {paymentMethod === "card" && (
-                                    <Box sx={{ width: "323px" }}>
+                                    <Box
+                                        sx={{
+                                            width: { xs: "270px", sm: "323px" },
+                                        }}
+                                    >
                                         <CardElement
                                             options={CARD_ELEMENT_OPTIONS}
                                         />
@@ -176,8 +180,8 @@ const PaymentForm = ({ totalAmount, discountAmount, cartItems }) => {
                         </Box>
                     </Grid>
                     <Grid item sx={{ width: "100%" }}>
-                        <Grid container justifyContent="space-between">
-                            <Grid item xs={5.5}>
+                        <Grid container gap={2} justifyContent="space-between">
+                            <Grid item xs={12} md={5.5}>
                                 <Link href="/checkout">
                                     <a>
                                         <Button
@@ -192,7 +196,7 @@ const PaymentForm = ({ totalAmount, discountAmount, cartItems }) => {
                                     </a>
                                 </Link>
                             </Grid>
-                            <Grid item xs={5.5}>
+                            <Grid item xs={12} md={5.5}>
                                 <Button
                                     variant="contained"
                                     disabled={showLoader}
@@ -235,8 +239,14 @@ const PaymentPage = ({ cartItems, voucher }) => {
     return (
         <Box sx={style.container}>
             <Steps />
-            <Grid container gap={3} sx={style.itemsContainer}>
-                <Grid item xs={8}>
+            <Grid
+                container
+                justifyContent="center"
+                flexDirection={{ xs: "column-reverse", xm: "row" }}
+                gap={3}
+                sx={style.itemsContainer}
+            >
+                <Grid item xs={12} xm={7} lg={8}>
                     <Elements stripe={stripePromise}>
                         <PaymentForm
                             totalAmount={totalAmount}
@@ -245,7 +255,7 @@ const PaymentPage = ({ cartItems, voucher }) => {
                         />
                     </Elements>
                 </Grid>
-                <Grid item xs={3.75}>
+                <Grid item xs={12} xm={4} lg={3.75}>
                     <AmountSummary
                         fromDetails={false}
                         cartItems={cartItems}

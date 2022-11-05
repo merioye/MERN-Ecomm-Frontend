@@ -64,7 +64,8 @@ const style = {
         },
     },
     productBottom: {
-        width: "280px",
+        // width: "280px",
+        width: { xs: "100%", m: "280px" },
         borderBottomLeftRadius: "8px",
         borderBottomRightRadius: "8px",
         padding: "1rem",

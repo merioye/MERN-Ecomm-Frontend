@@ -40,7 +40,7 @@ const DashboardOrderStatusCount = ({
     const theme = useTheme();
 
     return (
-        <Grid item xs={3}>
+        <Grid item xs={12} md={6} xm={3}>
             <Box
                 sx={style.container}
                 style={{ boxShadow: theme.palette.boxShadow.card }}

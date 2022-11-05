@@ -41,7 +41,12 @@ const ResetPassword = () => {
 
     return (
         <>
-            <Box sx={{ ...theme.authPageContainer, py: "50px" }}>
+            <Box
+                sx={{
+                    ...theme.authPageContainer,
+                    py: { xs: "0px", md: "50px" },
+                }}
+            >
                 <Box
                     sx={theme.authFormContainer}
                     style={{ boxShadow: theme.palette.boxShadow.modal }}

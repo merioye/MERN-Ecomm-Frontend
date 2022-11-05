@@ -15,6 +15,7 @@ const style = {
         margin: "auto",
         height: "100%",
         padding: { md: "80px 0px", xs: "40px 0px" },
+        paddingBottom: { xs: "90px" },
     },
     logo: {
         fontWeight: 700,

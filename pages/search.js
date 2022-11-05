@@ -32,7 +32,7 @@ const style = {
         paddingBottom: "5px",
     },
     filtersContainer: {
-        width: "1200px",
+        width: { xs: "90%", m: "600px", xm: "900px", lg: "1200px" },
         margin: "auto",
         padding: "0.8rem 1.25rem",
         backgroundColor: "bg.secondary",
@@ -46,7 +46,7 @@ const style = {
         lineHeight: 1.75,
     },
     itemsContainer: {
-        width: "1200px",
+        width: { xs: "90%", m: "600px", xm: "900px", lg: "1200px" },
         margin: "auto",
         marginTop: "55px",
     },
@@ -74,6 +74,7 @@ const Search = ({
                 container
                 justifyContent="space-between"
                 alignItems="center"
+                gap={2}
                 sx={style.filtersContainer}
                 style={{ boxShadow: theme.palette.boxShadow.card }}
             >
@@ -99,7 +100,7 @@ const Search = ({
 
                 {type === "product" ? (
                     <Grid item>
-                        <Grid container gap={3}>
+                        <Grid container gap={2}>
                             <Grid item>
                                 <Grid
                                     container
@@ -285,13 +286,23 @@ const Search = ({
                 <Grid
                     container
                     flexDirection={productsView === "grid" ? "row" : "column"}
-                    gap={3}
+                    justifyContent={{
+                        xs: type === "brand" ? "center" : "flex-start",
+                        m: "flex-start",
+                    }}
+                    gap={{ xs: 2, sm: 3 }}
                     sx={style.itemsContainer}
                 >
                     {type === "product"
                         ? data.map((product) => {
                               return (
-                                  <Grid key={product._id} item>
+                                  <Grid
+                                      sx={{
+                                          width: { xs: "100%", m: "initial" },
+                                      }}
+                                      key={product._id}
+                                      item
+                                  >
                                       {productsView === "grid" ? (
                                           <ProductCard
                                               fromCarousel={false}

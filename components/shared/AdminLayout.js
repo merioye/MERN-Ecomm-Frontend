@@ -15,8 +15,8 @@ import CircleIcon from "@mui/icons-material/Circle";
 const style = {
     openChatBoxBtn: {
         position: "fixed",
-        bottom: "30px",
-        right: "30px",
+        bottom: { xm: "30px", xs: "20px" },
+        right: { xm: "30px", xs: "20px" },
         backgroundColor: "bg.azureBlue",
         "&:hover": {
             backgroundColor: "bg.azureBlue",

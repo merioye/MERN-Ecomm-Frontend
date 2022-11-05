@@ -10,9 +10,9 @@ import "slick-carousel/slick/slick-theme.css";
 
 const style = {
     itemsContainer: {
-        width: "1200px",
+        width: { xs: "90%", m: "600px", xm: "900px", lg: "1200px" },
         margin: "auto",
-        marginBottom: "50px",
+        marginBottom: { xs: "30px", sm: "50px" },
         position: "relative",
         borderRadius: "8px",
     },
@@ -33,6 +33,26 @@ const settings1 = {
     swipeToSlide: false,
     arrows: false,
     speed: 500,
+    responsive: [
+        {
+            breakpoint: 1280,
+            settings: {
+                slidesToShow: 3,
+            },
+        },
+        {
+            breakpoint: 960,
+            settings: {
+                slidesToShow: 2,
+            },
+        },
+        {
+            breakpoint: 650,
+            settings: {
+                slidesToShow: 1,
+            },
+        },
+    ],
 };
 const settings2 = {
     infinite: false,
@@ -40,6 +60,32 @@ const settings2 = {
     swipeToSlide: false,
     arrows: false,
     speed: 500,
+    responsive: [
+        {
+            breakpoint: 1280,
+            settings: {
+                slidesToShow: 4,
+            },
+        },
+        {
+            breakpoint: 960,
+            settings: {
+                slidesToShow: 3,
+            },
+        },
+        {
+            breakpoint: 650,
+            settings: {
+                slidesToShow: 2,
+            },
+        },
+        {
+            breakpoint: 430,
+            settings: {
+                slidesToShow: 1,
+            },
+        },
+    ],
 };
 const Carousel = ({ type, heading, products }) => {
     const sliderRef = useRef(null);

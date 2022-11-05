@@ -4,7 +4,7 @@ import Carousel from "react-material-ui-carousel";
 const style = {
     container: {
         width: "100%",
-        marginBottom: "60px",
+        marginBottom: { xs: "10px", m: "60px" },
     },
     imageContainer: {
         width: "100%",

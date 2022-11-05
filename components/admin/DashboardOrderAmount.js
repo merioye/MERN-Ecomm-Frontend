@@ -13,7 +13,7 @@ const style = {
 };
 const DashboardOrderAmount = ({ bgColor, title, amount }) => {
     return (
-        <Grid item xs={4}>
+        <Grid item xs={12} xm={4}>
             <Grid
                 container
                 flexDirection="column"

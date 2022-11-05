@@ -26,7 +26,8 @@ import Currency from "react-currency-formatter";
 
 const style = {
     container: {
-        height: "80px",
+        // height: "80px",
+        height: { xs: "65px", m: "80px" },
         width: "100%",
         backgroundColor: "bg.secondary",
         position: "fixed",

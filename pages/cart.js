@@ -21,11 +21,11 @@ import Currency from "react-currency-formatter";
 const style = {
     container: {
         backgroundColor: "bg.primary",
-        padding: "40px",
+        padding: "40px 0px",
         width: "100%",
     },
     itemsConainer: {
-        width: "1200px",
+        width: { xs: "90%", lg: "1200px" },
         margin: "auto",
     },
     checkoutSection: {
@@ -43,8 +43,8 @@ const style = {
     },
     emptyCartImageContainer: {
         position: "relative",
-        height: "300px",
-        width: "400px",
+        height: { xs: "150px", m: "300px" },
+        width: { xs: "200px", m: "400px" },
     },
 };
 
@@ -90,8 +90,13 @@ const CartData = ({ cartItems, voucher, note }) => {
     return (
         <>
             <Steps />
-            <Grid container gap={3} sx={style.itemsConainer}>
-                <Grid item xs={8}>
+            <Grid
+                container
+                justifyContent="center"
+                gap={3}
+                sx={style.itemsConainer}
+            >
+                <Grid item xs={12} xm={7} lg={8}>
                     <Grid container flexDirection="column" gap={1.5}>
                         {cartItems.map((item) => {
                             return (
@@ -103,7 +108,7 @@ const CartData = ({ cartItems, voucher, note }) => {
                         })}
                     </Grid>
                 </Grid>
-                <Grid item xs={3.75}>
+                <Grid item xs={12} xm={4} lg={3.75}>
                     <Box
                         sx={style.checkoutSection}
                         style={{ boxShadow: theme.palette.boxShadow.card }}

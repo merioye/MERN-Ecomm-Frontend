@@ -16,7 +16,7 @@ const style = {
         margin: "auto",
     },
     heading: {
-        fontSize: "25px",
+        fontSize: { xs: "20px", md: "25px" },
         fontWeight: 700,
     },
     headingIcon: {

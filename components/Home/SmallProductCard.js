@@ -14,6 +14,7 @@ const style = {
         cursor: "pointer",
     },
     imageContainer: {
+        margin: "auto",
         height: "150px",
         width: "150px",
         marginBottom: "15px",

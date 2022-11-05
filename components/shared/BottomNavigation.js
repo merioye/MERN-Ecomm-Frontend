@@ -11,7 +11,7 @@ const style = {
         width: "100vw",
         position: "fixed",
         zIndex: 1201,
-        bottom: 0,
+        bottom: "-1.5px",
         left: 0,
         right: 0,
         height: "64px",

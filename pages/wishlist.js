@@ -14,7 +14,7 @@ const style = {
         width: "100%",
     },
     itemsContainer: {
-        width: { lg: "1200px", xs: "90%" },
+        width: { xs: "90%", m: "600px", xm: "900px", lg: "1200px" },
         margin: "auto",
         paddingTop: "30px",
     },
@@ -45,12 +45,16 @@ const Wishlist = ({ wishlistProducts }) => {
         <Box sx={style.container}>
             <PageHeading heading="My Wish List" />
             <UserDashboardSidebar />
-            <Grid container gap={3} sx={style.itemsContainer}>
+            <Grid container gap={{ xs: 2, sm: 3 }} sx={style.itemsContainer}>
                 {status ? (
                     wishlistProductsList.length ? (
                         wishlistProductsList.map((product) => {
                             return (
-                                <Grid item key={product._id}>
+                                <Grid
+                                    item
+                                    sx={{ width: { xs: "100%", m: "initial" } }}
+                                    key={product._id}
+                                >
                                     <ProductCard
                                         fromCarousel={false}
                                         product={product}
@@ -61,8 +65,15 @@ const Wishlist = ({ wishlistProducts }) => {
                         })
                     ) : (
                         <Box sx={style.emptyContainer}>
-                            <Typography variant="h5">
-                                Your wishlist is empty
+                            <Typography
+                                variant="h2"
+                                sx={{
+                                    fontSize: "20px",
+                                    color: "text.primary",
+                                    fontWeight: 600,
+                                }}
+                            >
+                                Your wishlist is empty:)
                             </Typography>
                             <Box sx={style.imageContainer}>
                                 <Image
@@ -89,8 +100,15 @@ const Wishlist = ({ wishlistProducts }) => {
                     })
                 ) : (
                     <Box sx={style.emptyContainer}>
-                        <Typography variant="h5">
-                            Your wishlist is empty
+                        <Typography
+                            variant="h2"
+                            sx={{
+                                fontSize: "20px",
+                                color: "text.primary",
+                                fontWeight: 600,
+                            }}
+                        >
+                            Your wishlist is empty:)
                         </Typography>
                         <Box sx={style.imageContainer}>
                             <Image

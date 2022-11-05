@@ -21,9 +21,17 @@ const style = {
         paddingBottom: "50px",
     },
     itemsContainer: {
-        width: "1200px",
+        width: { xs: "90%", m: "600px", xm: "900px", lg: "1200px" },
         margin: "auto",
-        marginBottom: "24px",
+        marginBottom: { xs: "10px", sm: "24px" },
+    },
+    featuredBrands: {
+        width: { xs: "90%", m: "600px", xm: "900px", lg: "1200px" },
+        margin: "auto",
+        marginBottom: { xs: "30px", sm: "24px" },
+        borderRadius: "8px",
+        padding: "16px",
+        backgroundColor: "bg.secondary",
     },
 };
 const Home = ({
@@ -58,7 +66,9 @@ const Home = ({
 
             <Grid
                 container
-                justifyContent="space-between"
+                justifyContent={{ xs: "center", m: "space-between" }}
+                gap={3}
+                display={{ xs: "none", m: "flex" }}
                 sx={style.itemsContainer}
             >
                 <ServiceCard
@@ -139,14 +149,11 @@ const Home = ({
                     />
                     <Grid
                         container
+                        justifyContent={{ xs: "center", m: "flex-start" }}
                         gap={2.255}
-                        sx={style.itemsContainer}
+                        sx={style.featuredBrands}
                         style={{
                             boxShadow: theme.palette.boxShadow.card,
-                            borderRadius: "8px",
-                            padding: "16px",
-                            marginBottom: "50px",
-                            backgroundColor: theme.palette.bg.secondary,
                         }}
                     >
                         {featuredBrands.map((brand) => {
@@ -212,6 +219,7 @@ const Home = ({
                         container
                         gap={3}
                         sx={style.itemsContainer}
+                        display={{ xs: "none", m: "flex" }}
                         style={{ marginBottom: "50px" }}
                     >
                         {categories.map((category) => {
@@ -232,10 +240,18 @@ const Home = ({
                         heading="More For You"
                         link="/search?sort=date"
                     />
-                    <Grid container gap={3} sx={style.itemsContainer}>
+                    <Grid
+                        container
+                        gap={{ xs: 2, sm: 3 }}
+                        sx={style.itemsContainer}
+                    >
                         {moreForYouProducts.map((product) => {
                             return (
-                                <Grid item key={product._id}>
+                                <Grid
+                                    sx={{ width: { xs: "100%", m: "initial" } }}
+                                    item
+                                    key={product._id}
+                                >
                                     <ProductCard
                                         fromCarousel={false}
                                         product={product}

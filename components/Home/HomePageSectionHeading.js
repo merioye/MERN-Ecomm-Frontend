@@ -6,12 +6,12 @@ import CategoryIcon from "@mui/icons-material/Category";
 
 const style = {
     itemsContainer: {
-        width: "1200px",
+        width: { xs: "90%", m: "600px", xm: "900px", lg: "1200px" },
         margin: "auto",
-        marginBottom: "24px",
+        marginBottom: { xs: "10px", sm: "24px" },
     },
     heading: {
-        fontSize: "25px",
+        fontSize: { xs: "18px", sm: "25px" },
         fontWeight: 700,
     },
     headingIcon: {
@@ -35,6 +35,10 @@ const HomePageSectionHeading = ({ heading, link }) => {
             container
             alignItems="center"
             justifyContent="space-between"
+            display={{
+                xs: heading === "Categories" ? "none" : "flex",
+                m: "flex",
+            }}
             sx={style.itemsContainer}
         >
             <Grid item>

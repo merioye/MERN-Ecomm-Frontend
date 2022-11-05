@@ -24,7 +24,7 @@ const style = {
         backgroundColor: "bg.secondary",
         color: "text.primary",
         borderRadius: "8px",
-        padding: "40px 1.25rem",
+        padding: { xs: "20px 1.25rem", m: "40px 1.25rem" },
         width: "100%",
         position: "relative",
     },
@@ -32,6 +32,7 @@ const style = {
         height: "180px",
         width: "180px",
         position: "relative",
+        margin: "auto",
     },
     discountPer: {
         position: "absolute",
@@ -134,7 +135,8 @@ const LandscapeProductCard = ({ product }) => {
                 <Grid
                     container
                     gap="20px"
-                    alignItems="center"
+                    alignItems={{ xs: "flex-start", m: "center" }}
+                    flexDirection={{ xs: "column", m: "row" }}
                     sx={style.container}
                     style={{ boxShadow: theme.palette.boxShadow.card }}
                 >
@@ -147,7 +149,10 @@ const LandscapeProductCard = ({ product }) => {
                             blurDataURL={product.images[0].imageUrl}
                         />
                     </Grid>
-                    <Grid item sx={{ width: "calc(100% - 200px)" }}>
+                    <Grid
+                        item
+                        sx={{ width: { xs: "100%", m: "calc(100% - 200px)" } }}
+                    >
                         <Typography variant="h3" sx={style.productTitle}>
                             {product.name}
                         </Typography>

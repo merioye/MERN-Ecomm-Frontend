@@ -144,7 +144,11 @@ const CreateORUpdateProduct = ({
                         onSubmit={handleFormSubmit}
                         encType="multipart/form-data"
                     >
-                        <Grid container justifyContent="space-between">
+                        <Grid
+                            container
+                            gap={{ xs: "24px", md: "0px" }}
+                            justifyContent="space-between"
+                        >
                             <Grid item sx={style.inputContainer}>
                                 <InputBox
                                     label="Name"
@@ -306,6 +310,7 @@ const CreateORUpdateProduct = ({
                         <Grid
                             container
                             justifyContent="space-between"
+                            gap={{ xs: "24px", md: "0px" }}
                             mb="24px"
                         >
                             <Grid item sx={style.inputContainer}>
@@ -349,6 +354,7 @@ const CreateORUpdateProduct = ({
                         <Grid
                             container
                             justifyContent="space-between"
+                            gap={{ xs: "24px", md: "0px" }}
                             mb="24px"
                         >
                             <Grid item sx={style.inputContainer}>

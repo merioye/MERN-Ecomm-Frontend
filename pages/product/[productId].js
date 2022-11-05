@@ -33,7 +33,7 @@ const style = {
         padding: "50px 0px",
     },
     itemsContainer: {
-        width: "1200px",
+        width: { xs: "90%", m: "600px", xm: "900px", lg: "1200px" },
         margin: "auto",
     },
     largeImageContainer: {
@@ -55,7 +55,7 @@ const style = {
         borderStyle: "solid",
     },
     productTitle: {
-        fontSize: "30px",
+        fontSize: { xs: "20px", m: "30px" },
         fontWeight: 700,
         color: "text.primary",
         marginBottom: "16px",
@@ -88,7 +88,7 @@ const style = {
         padding: "0px 20px",
     },
     tabsContainer: {
-        width: "1200px",
+        width: { xs: "90%", m: "600px", xm: "900px", lg: "1200px" },
         margin: "auto",
         marginTop: "80px",
         marginBottom: "24px",
@@ -208,7 +208,7 @@ const SingleProduct = ({ product, relatedProducts }) => {
     return (
         <Box sx={style.container}>
             <Grid container gap={2} sx={style.itemsContainer}>
-                <Grid item xs={6}>
+                <Grid item xs={12} md={6}>
                     <Grid container flexDirection="column" alignItems="center">
                         <Grid item sx={style.largeImageContainer}>
                             <Image
@@ -259,7 +259,7 @@ const SingleProduct = ({ product, relatedProducts }) => {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={12} md={5}>
                     <Typography variant="h1" sx={style.productTitle}>
                         {product.name}
                     </Typography>
@@ -606,10 +606,18 @@ const SingleProduct = ({ product, relatedProducts }) => {
                 </Box>
             ) : null}
             {relatedProducts.length ? (
-                <Grid container gap={3} sx={style.itemsContainer}>
+                <Grid
+                    container
+                    gap={{ xs: 2, sm: 3 }}
+                    sx={style.itemsContainer}
+                >
                     {relatedProducts.map((product) => {
                         return (
-                            <Grid item key={product._id}>
+                            <Grid
+                                item
+                                sx={{ width: { xs: "100%", m: "initial" } }}
+                                key={product._id}
+                            >
                                 <ProductCard
                                     fromCarousel={false}
                                     product={product}

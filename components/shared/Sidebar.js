@@ -754,11 +754,14 @@ const MobileSidebar = () => {
     };
 
     return (
-        <Drawer open={showSidebarOnMobile} onClose={handleToggleSidebar(false)}>
+        <Drawer
+            ModalProps={{ keepMounted: true }}
+            open={showSidebarOnMobile}
+            onClose={handleToggleSidebar(false)}
+        >
             <Box
                 sx={style.container}
                 role="presentation"
-                onClick={handleToggleSidebar(false)}
                 onKeyDown={handleToggleSidebar(false)}
             >
                 <SidebarContent />

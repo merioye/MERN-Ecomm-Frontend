@@ -32,7 +32,7 @@ const style = {
         fontWeight: 400,
     },
     inputContainer: {
-        width: "48%",
+        width: { xs: "100%", md: "48%" },
     },
     orderItemImage: {
         height: "64px",
@@ -120,7 +120,7 @@ const OrderDetails = ({ order }) => {
                 sx={style.orderDetails}
                 style={{ boxShadow: theme.palette.boxShadow.card }}
             >
-                <Grid container gap="32px">
+                <Grid container gap={{ xs: "10px", md: "32px" }}>
                     <Grid item>
                         <Grid container>
                             <Grid item>
@@ -180,6 +180,7 @@ const OrderDetails = ({ order }) => {
                 <Grid
                     container
                     justifyContent="space-between"
+                    gap={{ xs: "24px", md: "0px" }}
                     mt="24px"
                     mb="24px"
                 >
@@ -250,7 +251,8 @@ const OrderDetails = ({ order }) => {
                     return (
                         <Grid
                             container
-                            alignItems="center"
+                            alignItems={{ xs: "flex-start", md: "center" }}
+                            flexDirection={{ xs: "column", md: "row" }}
                             mt="16px"
                             key={item.product._id}
                         >
@@ -301,7 +303,7 @@ const OrderDetails = ({ order }) => {
             </Box>
 
             <Grid container spacing={2.4} mb="20px" mt="0px">
-                <Grid item xs={6}>
+                <Grid item xs={12} md={6}>
                     <Box
                         sx={style.orderDetails}
                         style={{ boxShadow: theme.palette.boxShadow.card }}
@@ -336,7 +338,7 @@ const OrderDetails = ({ order }) => {
                         </Box>
                     </Box>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} md={6}>
                     <Box
                         sx={style.orderDetails}
                         style={{ boxShadow: theme.palette.boxShadow.card }}

@@ -6,6 +6,7 @@ export const theme = createTheme({
             xs: 0,
             sm: 400,
             md: 600,
+            m: 650,
             xm: 960,
             lg: 1280,
             xl: 1920,
@@ -66,11 +67,12 @@ export const theme = createTheme({
         alignItems: "center",
     },
     authFormContainer: {
-        width: "500px",
+        width: { xs: "100%", md: "500px" },
         height: "auto",
+        minHeight: { xs: "100vh", md: "auto" },
         backgroundColor: "bg.secondary",
-        borderRadius: "8px",
-        padding: "2rem 3rem",
+        borderRadius: { xs: "0px", md: "8px" },
+        padding: { xs: "2rem 2rem", md: "2rem 3rem" },
         transition: "box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     },
     authFormTitle: {

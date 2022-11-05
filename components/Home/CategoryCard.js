@@ -11,6 +11,7 @@ const style = {
         display: "flex",
         alignItems: "center",
         cursor: "pointer",
+        minWidth: "180px",
     },
     imageContainer: {
         height: "50px",

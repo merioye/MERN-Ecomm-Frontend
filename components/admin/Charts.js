@@ -13,7 +13,6 @@ import { Doughnut, Bar } from "react-chartjs-2";
 
 const style = {
     container: {
-        height: "400px",
         borderRadius: "8px",
         backgroundColor: "bg.secondary",
         padding: "16px",
@@ -93,9 +92,10 @@ const Charts = ({ sales, topRevenueProducts }) => {
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid item xs={12} xm={6}>
                 <Box
                     sx={style.container}
+                    height={{ xs: "auto", xm: "400px" }}
                     style={{ boxShadow: theme.palette.boxShadow.card }}
                 >
                     <Typography variant="body1" sx={style.heading}>
@@ -120,9 +120,10 @@ const Charts = ({ sales, topRevenueProducts }) => {
                 </Box>
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={12} xm={6}>
                 <Box
                     sx={style.container}
+                    height="400px"
                     style={{ boxShadow: theme.palette.boxShadow.card }}
                 >
                     <Typography variant="body1" sx={style.heading}>

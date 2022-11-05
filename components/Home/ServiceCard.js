@@ -11,6 +11,7 @@ const style = {
         display: "flex",
         alignItems: "center",
         backgroundColor: "bg.secondary",
+        minWidth: "250px",
     },
     iconContainer: {
         marginRight: "1rem",

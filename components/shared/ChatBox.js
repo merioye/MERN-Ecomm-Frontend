@@ -561,7 +561,12 @@ const ChatBox = ({ fromAdmin }) => {
                             <Typography variant="h2" sx={style.heading}>
                                 Your conversations
                             </Typography>
-                            <IconButton sx={style.chatBoxCloseBtn}>
+                            <IconButton
+                                onClick={() =>
+                                    dispatch(toggleChatBoxVisibility(false))
+                                }
+                                sx={style.chatBoxCloseBtn}
+                            >
                                 <CloseIcon sx={{ color: "text.white" }} />
                             </IconButton>
                         </Box>
