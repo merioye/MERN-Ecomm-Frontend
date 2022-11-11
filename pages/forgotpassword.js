@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     useTheme,
     Box,
@@ -9,6 +9,7 @@ import {
     CircularProgress,
 } from "@mui/material";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { showErrorAlert } from "redux/alertSlice";
 import { getResetPasswordLink } from "redux/authSlice";
@@ -19,10 +20,18 @@ import checkIsValid from "regexUtils/checkIsValid";
 
 const ForgotPassword = () => {
     const { alert } = useSelector((state) => state.alert);
+    const { user } = useSelector((state) => state.auth);
     const [values, setValues] = useState({ email: "" });
     const [showResetLoader, setShowResetLoader] = useState(false);
     const dispatch = useDispatch();
+    const router = useRouter();
     const theme = useTheme();
+
+    useEffect(() => {
+        if (user) {
+            router.push("/");
+        }
+    }, [user, router]);
 
     const handleGetResetPasswordLink = () => {
         if (!values.email.trim()) {

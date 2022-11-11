@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { showErrorAlert, showSuccessAlert } from "redux/alertSlice";
-import { getUser } from "redux/authSlice";
 import axiosInstance from "config/axios";
 
 const updateCartItems = (cartItems, product, type, dispatch) => {
@@ -91,7 +90,6 @@ export function getCartItems() {
             const res = await axiosInstance.get("/api/carts/cart");
             const { products } = res.data.cart;
             dispatch(setCartItems(products));
-            dispatch(getUser());
         } catch (e) {
             console.log(e);
         }

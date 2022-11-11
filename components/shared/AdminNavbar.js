@@ -15,7 +15,6 @@ import LanguageIcon from "@mui/icons-material/Language";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "redux/authSlice";
 import { getOrderNotifications } from "redux/alertSlice";
 import { toggleMobileSidebar } from "redux/productSlice";
 import Popup from "components/shared/Popup";
@@ -109,9 +108,8 @@ const AdminNavbar = () => {
     useSocket();
 
     useEffect(() => {
-        dispatch(getUser());
         dispatch(getOrderNotifications());
-    }, []);
+    }, [dispatch]);
 
     return (
         <Box

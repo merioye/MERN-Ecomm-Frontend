@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     Box,
     useTheme,
@@ -20,6 +20,7 @@ import checkIsValid from "regexUtils/checkIsValid";
 
 const Register = () => {
     const { alert } = useSelector((state) => state.alert);
+    const { user } = useSelector((state) => state.auth);
     const [values, setValues] = useState({
         name: "",
         email: "",
@@ -31,6 +32,12 @@ const Register = () => {
     const dispatch = useDispatch();
     const theme = useTheme();
     const router = useRouter();
+
+    useEffect(() => {
+        if (user) {
+            router.push("/");
+        }
+    }, [user, router]);
 
     const handleCreateAccount = () => {
         if (

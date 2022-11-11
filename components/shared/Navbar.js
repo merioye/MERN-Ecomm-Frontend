@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { showErrorAlert } from "redux/alertSlice";
-import { getCartItems } from "redux/cartSlice";
 import { useSocket } from "hooks/useSocket";
 import {
     useTheme,
@@ -23,6 +22,7 @@ import NavProfilePopup from "components/shared/NavProfilePopup";
 import debounce from "utils/debounce";
 import axiosInstance from "config/axios";
 import Currency from "react-currency-formatter";
+import { getCartItems } from "redux/cartSlice";
 
 const style = {
     container: {
@@ -167,7 +167,7 @@ const Navbar = () => {
 
     useEffect(() => {
         dispatch(getCartItems());
-    }, []);
+    }, [dispatch]);
 
     const redirect = () => {
         setSearchResults(false);

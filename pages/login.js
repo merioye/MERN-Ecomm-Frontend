@@ -18,6 +18,7 @@ import CustomAlert from "components/shared/CustomAlert";
 
 const Login = () => {
     const { alert } = useSelector((state) => state.alert);
+    const { user } = useSelector((state) => state.auth);
     const [values, setValues] = useState({ email: "", password: "" });
     const [showLoginLoader, setShowLoginLoader] = useState(false);
     const dispatch = useDispatch();
@@ -31,7 +32,13 @@ const Login = () => {
             router.replace("/login", undefined, { shallow: true });
             document.title = "Login";
         }
-    }, [error]);
+    }, [error, router, dispatch]);
+
+    useEffect(() => {
+        if (user) {
+            router.push("/");
+        }
+    }, [user, router]);
 
     const handleLogin = () => {
         if (!values.email.trim().length || !values.password.trim().length) {

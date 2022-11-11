@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     useTheme,
     Box,
@@ -20,12 +20,19 @@ import checkIsValid from "regexUtils/checkIsValid";
 
 const ResetPassword = () => {
     const { alert } = useSelector((state) => state.alert);
+    const { user } = useSelector((state) => state.auth);
     const [values, setValues] = useState({ password: "", retypePassword: "" });
     const [showResetLoader, setShowResetLoader] = useState(false);
     const dispatch = useDispatch();
     const theme = useTheme();
     const router = useRouter();
     const { query } = router;
+
+    useEffect(() => {
+        if (user) {
+            router.push("/");
+        }
+    }, [user, router]);
 
     const handleResetPassword = () => {
         if (
